@@ -56,6 +56,7 @@ App.bucketsController = Em.ArrayController.create({
 
 App.keysController = Em.ArrayController.create({
     content: [],
+
     loadingKeys: true,
 
     triggerBucketKeyLoad: function() { 
@@ -72,6 +73,10 @@ App.keysController = Em.ArrayController.create({
 /* 
  * Views
  */
+App.objectBrowserView = Em.View.create({
+  templateName: 'object-browser'
+});
+
 App.bucketsContainer = Em.View.create({
     elementId: 'buckets'
 });
@@ -109,4 +114,20 @@ App.bucketListView = Em.View.extend({
     }
 });
 
-App.bucketsController.loadBuckets();
+/*
+ * State Machines
+ */
+App.stateManager = Em.StateManager.create({
+    rootElement: '#container',
+
+    initialState: 'objectBrowser',
+
+    objectBrowser: Em.ViewState.create({
+        view: App.objectBrowserView,
+
+        enter: function(manager, transition) { 
+            App.bucketsController.loadBuckets();
+            this._super(manager, transition);
+        }
+      })
+});
