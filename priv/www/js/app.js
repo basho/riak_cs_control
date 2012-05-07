@@ -94,10 +94,12 @@ App.keysContainer = Em.View.create({
 
     bucketSelected: function() { 
         if(App.bucketsController.get('selectedBucket') === null) { 
+          Em.run(function() { 
             $('#buckets').animate({width : '316px'}, {queue : false, duration : 300, complete : function () {
                 $('#buckets').addClass('one-third-width').css('');
                 $('#keys').slideDown();
-            }});
+            }})
+          });
         }
     }.observesBefore('App.bucketsController.selectedBucket')
 });
