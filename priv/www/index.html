@@ -55,7 +55,11 @@
                   <table class="info-table">
                       <thead>
                           <tr>
-                              <th><h2 class="title">Name <img class="spinner" src="images/spinner.gif"> </h2></th>
+                              <th><h2 class="title">Name 
+                                  {{#view App.keysSpinner tagName="span"}}
+                                      <img class="spinner" src="images/spinner.gif">
+                                  {{/view}}
+                              </h2></th>
                               <th><h2 class="title">Size</h2></th>
                               <th><h2 class="title">Last Modified</h2></th>
                           </tr>

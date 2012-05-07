@@ -60,14 +60,19 @@ App.keysController = Em.ArrayController.create({
     loadingKeys: true,
 
     triggerBucketKeyLoad: function() { 
-        if(App.bucketsController.get('selectedBucket') !== null) {
-          App.bucketsController.get('selectedBucket').loadKeys();
-          App.stateManager.goToState('objectBrowser.withKeyListing.isLoading');
+        var selectedBucket = App.bucketsController.get('selectedBucket');
+
+        if(selectedBucket !== null) { 
+            App.stateManager.goToState('objectBrowser.withKeyListing.isLoading');
+            App.bucketsController.get('selectedBucket').loadKeys();
         }
     }.observes('App.bucketsController.selectedBucket'),
 
     updateKeyListing: function() {
-        this.set('content', App.bucketsController.getPath('selectedBucket.keys'));
+        var keys = App.bucketsController.getPath('selectedBucket.keys'); 
+
+        this.set('content', keys);
+
         App.stateManager.goToState('objectBrowser.withKeyListing');
     }.observes('App.bucketsController.selectedBucket.keys')
 });
@@ -77,15 +82,23 @@ App.keysController = Em.ArrayController.create({
  */
 App.objectBrowserView = Em.View.create({ templateName: 'object-browser' });
 
+App.keysSpinner = Em.View.extend();
+
 App.bucketListView = Em.View.extend({
     tagName: 'tr',
 
     isSelectedRow: function() { 
-        return App.bucketsController.get('selectedBucket') === this.get('content');
+        var selectedBucket = App.bucketsController.get('selectedBucket'),
+            content = this.get('content');
+
+        return selectedBucket === content;
     }.property('App.bucketsController.selectedBucket').cacheable(),
 
     click: function() { 
-        if(App.bucketsController.get('selectedBucket') === this.get('content')) { 
+        var selectedBucket = App.bucketsController.get('selectedBucket'),
+            content = this.get('content');
+
+        if(selectedBucket === content) {
           App.bucketsController.set('selectedBucket', null);
           App.stateManager.goToState('objectBrowser');
         } else { 
