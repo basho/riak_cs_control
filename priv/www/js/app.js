@@ -127,7 +127,7 @@ App.stateManager = Em.StateManager.create({
         withKeyListing: Em.State.create({
             enter: function(manager, transition) { 
                 Em.run(function() { 
-                    $('#buckets').animate({width : '316px'}, {queue : false, duration : 300, complete : function () {
+                    $('#buckets').animate({width : '33%'}, {queue : false, duration : 300, complete : function () {
                         $('#buckets').addClass('one-third-width').css('');
                         $('#keys').slideDown();
                     }});
@@ -137,7 +137,7 @@ App.stateManager = Em.StateManager.create({
             exit: function(manager, transition) { 
                 Em.run(function() { 
                     $('#keys').slideUp(300, function() { 
-                      $('#buckets').animate({width : '960px'}, {queue : true, duration : 300, complete : function () {
+                      $('#buckets').animate({width : '100%'}, {queue : true, duration : 300, complete : function () {
                           $('#buckets').removeClass('one-third-width').css('');
                       }});
                     });

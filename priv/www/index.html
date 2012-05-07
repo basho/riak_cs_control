@@ -34,7 +34,7 @@
                       </thead>
                       <tbody id="bucket-list">
                           {{#each App.bucketsController}}
-                              {{#view App.bucketListView contentBinding="this" classBinding="isSelectedRow"}}
+                              {{#view App.bucketListView contentBinding="this" classBinding="isSelectedRow:selected-row" class="standard-row"}}
                                   {{#with content}}
                                   <td>
                                     <span class="riak-item">{{name}}</span>
@@ -66,7 +66,7 @@
                       </thead>
                       <tbody>
                           {{#each App.keysController}}
-                              <tr>
+                              <tr class="standard-row">
                                   <td><span class="riak-item">{{key}}</span></td>
                                   <td>{{size}}</td>
                                   <td>{{last_modified}}</td>
@@ -82,17 +82,19 @@
 
     <div id="container"></div>
 
-    <footer class="constrained block-container orange has-shadow">
-        <div class="footer-bar orange-linear">
-            <section class="half-width">
-                <div class="left footer-info">Copyright &copy; 2012 Basho Technologies, Inc.</div>
-            </section>
-            <section class="half-width">
-                <div class="right footer-info">
-                    <a class="riak-logo" href="http://www.basho.com">Poweredy by</a>
-                </div>
-            </section>
-            <div class="clear"></div>
+    <footer class="constrained">
+        <div class="block-container orange has-shadow">
+            <div class="footer-bar orange-linear">
+                <section class="half-width">
+                    <div class="left footer-info">Copyright &copy; 2012 Basho Technologies, Inc.</div>
+                </section>
+                <section class="half-width">
+                    <div class="right footer-info">
+                        <a class="riak-logo" href="http://www.basho.com">Poweredy by</a>
+                    </div>
+                </section>
+                <div class="clear"></div>
+            </div>
         </div>
     </footer>
 
