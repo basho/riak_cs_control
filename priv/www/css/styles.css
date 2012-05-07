@@ -556,7 +556,7 @@ footer.constrained {
     margin-bottom: 50px;
 }
 
-.is-done {
+.spinner {
     display: none;
 }
 
@@ -565,5 +565,3 @@ footer.constrained {
 #keys {
     display: none;
 }
-
-

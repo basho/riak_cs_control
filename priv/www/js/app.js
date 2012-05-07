@@ -62,38 +62,20 @@ App.keysController = Em.ArrayController.create({
     triggerBucketKeyLoad: function() { 
         if(App.bucketsController.get('selectedBucket') !== null) {
           App.bucketsController.get('selectedBucket').loadKeys();
-          this.set('loadingKeys', true);
+          App.stateManager.goToState('objectBrowser.withKeyListing.isLoading');
         }
     }.observes('App.bucketsController.selectedBucket'),
 
     updateKeyListing: function() {
         this.set('content', App.bucketsController.getPath('selectedBucket.keys'));
-        this.set('loadingKeys', false);
+        App.stateManager.goToState('objectBrowser.withKeyListing');
     }.observes('App.bucketsController.selectedBucket.keys')
 });
 
 /* 
  * Views
  */
-App.objectBrowserView = Em.View.create({
-    templateName: 'object-browser'
-});
-
-App.bucketsContainer = Em.View.create({
-    elementId: 'buckets'
-});
-
-App.keysSpinner = Em.View.extend({
-    tagName: 'span',
-
-    isDone: function() { 
-        return !App.keysController.loadingKeys;
-    }.property('App.keysController.loadingKeys').cacheable()
-});
-
-App.keysContainer = Em.View.create({
-    elementId: 'keys'
-});
+App.objectBrowserView = Em.View.create({ templateName: 'object-browser' });
 
 App.bucketListView = Em.View.extend({
     tagName: 'tr',
@@ -140,14 +122,24 @@ App.stateManager = Em.StateManager.create({
             },
 
             exit: function(manager, transition) { 
-              Em.run(function() { 
-                  $('#keys').slideUp(300, function() { 
-                    $('#buckets').animate({width : '960px'}, {queue : true, duration : 300, complete : function () {
-                        $('#buckets').removeClass('one-third-width').css('');
-                    }});
-                  });
-              });
-            }
+                Em.run(function() { 
+                    $('#keys').slideUp(300, function() { 
+                      $('#buckets').animate({width : '960px'}, {queue : true, duration : 300, complete : function () {
+                          $('#buckets').removeClass('one-third-width').css('');
+                      }});
+                    });
+                });
+            },
+
+            isLoading: Em.State.create({
+                enter: function(manager, transition) { 
+                    $('#keys .spinner').fadeIn();
+                },
+
+                exit: function(manager, transition) { 
+                    $('#keys .spinner').fadeOut();
+                }
+            })
         })
     })
 });
