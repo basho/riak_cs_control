@@ -518,14 +518,14 @@ nav .block-container:active {
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
 }
-.info-table tbody tr.selected-row {
+.info-table tbody tr.is-selected-row {
     background: #ffebd5;
 }
-.info-table tbody tr.selected-row:nth-child(even) {
+.info-table tbody tr.is-selected-row:nth-child(even) {
     border-top: 1px solid #ffc98c;
     border-bottom: 1px solid #ffc98c;
 }
-.info-table tbody tr.selected-row .riak-item {
+.info-table tbody tr.is-selected-row .riak-item {
     border: 1px solid #ffc98c;
 }
 .info-table th {
@@ -554,6 +554,10 @@ nav .block-container:active {
 
 footer.constrained {
     margin-bottom: 50px;
+}
+
+.is-done {
+    display: none;
 }
 
 /* INITIAL SETUPS TO BE MANIPULATED BY JS */

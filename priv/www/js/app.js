@@ -1,16 +1,36 @@
 App = Em.Application.create();
 
-App.Bucket = Ember.Object.extend();
+/* 
+ * Models
+ */
+App.Bucket = Em.Object.extend({
+    keys: [],
 
-App.Key = Ember.Object.extend();
+    loadKeys: function() { 
+        var self = this;
 
-App.bucketListView = Ember.View.extend({
-    click: function() { 
-        App.bucketsController.set('selectedBucket', this.get('content'));
+        $.ajax({
+            url: '/buckets/' + self.get('name') + '/keys',
+            dataType: 'json',
+            success: function(data) {
+                var keys = data.keys;
+
+                keys = keys.map(function(key) {
+                    return App.Key.create(key);
+                });
+
+                self.set('keys', keys);
+            },
+        });
     }
 });
 
-App.bucketsController = Ember.ArrayController.create({
+App.Key = Em.Object.extend();
+
+/*
+ * Controllers
+ */
+App.bucketsController = Em.ArrayController.create({
     content: [],
 
     selectedBucket: null,
@@ -25,61 +45,67 @@ App.bucketsController = Ember.ArrayController.create({
                 var buckets = data.buckets;
 
                 buckets = buckets.map(function(bucket) {
-                    return self.createBucket(bucket);
+                    return App.Bucket.create(bucket);
                 });
 
                 self.set('content', buckets);
             }
         });
-    },
-
-    createBucket: function(bucket) {
-        return App.Bucket.create(bucket);
     }
 });
 
-App.keysController = Ember.ArrayController.create({
+App.keysController = Em.ArrayController.create({
     content: [],
+    loadingKeys: true,
 
-    bucketChange: (function() { 
-        var self = this;
+    triggerBucketKeyLoad: function() { 
+        App.bucketsController.get('selectedBucket').loadKeys();
+        this.set('loadingKeys', true);
+    }.observes('App.bucketsController.selectedBucket'),
 
-        if(App.bucketsController.get('selectedBucket') !== null) {
-            self.loadKeys();
+    updateKeyListing: function() {
+        this.set('content', App.bucketsController.getPath('selectedBucket.keys'));
+        this.set('loadingKeys', false);
+    }.observes('App.bucketsController.selectedBucket.keys')
+});
+
+/* 
+ * Views
+ */
+App.bucketsContainer = Em.View.create({
+    elementId: 'buckets'
+});
+
+App.keysSpinner = Em.View.extend({
+    tagName: 'span',
+
+    isDone: function() { 
+        return !App.keysController.loadingKeys;
+    }.property('App.keysController.loadingKeys')
+});
+
+App.keysContainer = Em.View.create({
+    elementId: 'keys',
+
+    bucketSelected: function() { 
+        if(App.bucketsController.get('selectedBucket') === null) { 
+            $('#buckets').animate({width : '316px'}, {queue : false, duration : 300, complete : function () {
+                $('#buckets').addClass('one-third-width').css('');
+                $('#keys').slideDown();
+            }});
         }
-    }).observes('App.bucketsController.selectedBucket'),
+    }.observesBefore('App.bucketsController.selectedBucket')
+});
 
-    showKeys: function() {
-        $('#buckets').animate({width : '316px'}, {queue : false, duration : 300, complete : function () {
-            $('#buckets').addClass('one-third-width').css('');
-            $('#keys').slideDown();
-        }});
-    },
+App.bucketListView = Em.View.extend({
+    tagName: 'tr',
 
-    loadKeys: function() {
-        var self = this;
+    isSelectedRow: function() { 
+        return App.bucketsController.get('selectedBucket') === this.get('content');
+    }.property('App.bucketsController.selectedBucket').cacheable(),
 
-        $.ajax({
-            url: '/buckets/' + App.bucketsController.getPath('selectedBucket.name') + '/keys',
-            dataType: 'json',
-            success: function(data) {
-                var keys = data.keys;
-
-                keys = keys.map(function(key) {
-                    return self.createKey(key);
-                });
-
-                self.set('content', keys);
-                self.showKeys();
-
-                // TODO: SHOW KEYS SHOULD BE COMPUTED PROPERTY
-                // TODO: SET SELECTED ROW
-            },
-        });
-    },
-
-    createKey: function(key) {
-        return App.Key.create(key);
+    click: function() { 
+        App.bucketsController.set('selectedBucket', this.get('content'));
     }
 });
 

@@ -34,15 +34,13 @@
                       </thead>
                       <tbody id="bucket-list">
                           {{#each App.bucketsController}}
-                            <tr>
-                                <td>
-                                    {{#view App.bucketListView contentBinding="this"}}
-                                        {{#with content}}
-                                          <span class="riak-item">{{name}}</span>
-                                        {{/with}}
-                                    {{/view}}
-                                </td>
-                              </tr>
+                              {{#view App.bucketListView contentBinding="this" classBinding="isSelectedRow"}}
+                                  {{#with content}}
+                                  <td>
+                                    <span class="riak-item">{{name}}</span>
+                                    </td>
+                                  {{/with}}
+                              {{/view}}
                           {{/each}}
                       </tbody>
                   </table>
@@ -57,7 +55,9 @@
                   <table class="info-table">
                       <thead>
                           <tr>
-                              <th><h2 class="title">Name</h2></th>
+                              <th><h2 class="title">Name 
+                                  {{#view App.keysSpinner classBinding="isDone"}}<img src="images/spinner.gif">{{/view}}
+                              </h2></th>
                               <th><h2 class="title">Size</h2></th>
                               <th><h2 class="title">Last Modified</h2></th>
                           </tr>
