@@ -40,4 +40,10 @@ to_resource(ReqData, Context) ->
 
 get_path(ReqData) -> 
     {ok, App} = application:get_application(?MODULE),
-    filename:join([code:priv_dir(App), 'www'] ++ wrq:path_tokens(ReqData)).
+    Filename = case wrq:disp_path(ReqData) of
+        "" -> 
+            ["index.html"];
+        _ ->
+            wrq:path_tokens(ReqData)
+    end,
+    filename:join([code:priv_dir(App), 'www'] ++ Filename).
