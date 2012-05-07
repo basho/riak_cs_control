@@ -60,8 +60,10 @@ App.keysController = Em.ArrayController.create({
     loadingKeys: true,
 
     triggerBucketKeyLoad: function() { 
-        App.bucketsController.get('selectedBucket').loadKeys();
-        this.set('loadingKeys', true);
+        if(App.bucketsController.get('selectedBucket') !== null) {
+          App.bucketsController.get('selectedBucket').loadKeys();
+          this.set('loadingKeys', true);
+        }
     }.observes('App.bucketsController.selectedBucket'),
 
     updateKeyListing: function() {
@@ -86,22 +88,11 @@ App.keysSpinner = Em.View.extend({
 
     isDone: function() { 
         return !App.keysController.loadingKeys;
-    }.property('App.keysController.loadingKeys')
+    }.property('App.keysController.loadingKeys').cacheable()
 });
 
 App.keysContainer = Em.View.create({
-    elementId: 'keys',
-
-    bucketSelected: function() { 
-        if(App.bucketsController.get('selectedBucket') === null) { 
-          Em.run(function() { 
-            $('#buckets').animate({width : '316px'}, {queue : false, duration : 300, complete : function () {
-                $('#buckets').addClass('one-third-width').css('');
-                $('#keys').slideDown();
-            }})
-          });
-        }
-    }.observesBefore('App.bucketsController.selectedBucket')
+    elementId: 'keys'
 });
 
 App.bucketListView = Em.View.extend({
@@ -112,7 +103,13 @@ App.bucketListView = Em.View.extend({
     }.property('App.bucketsController.selectedBucket').cacheable(),
 
     click: function() { 
-        App.bucketsController.set('selectedBucket', this.get('content'));
+        if(App.bucketsController.get('selectedBucket') === this.get('content')) { 
+          App.bucketsController.set('selectedBucket', null);
+          App.stateManager.goToState('objectBrowser');
+        } else { 
+          App.bucketsController.set('selectedBucket', this.get('content'));
+          App.stateManager.goToState('objectBrowser.withKeyListing');
+        }
     }
 });
 
@@ -128,8 +125,29 @@ App.stateManager = Em.StateManager.create({
         view: App.objectBrowserView,
 
         enter: function(manager, transition) { 
-            App.bucketsController.loadBuckets();
             this._super(manager, transition);
-        }
+            App.bucketsController.loadBuckets();
+        },
+
+        withKeyListing: Em.State.create({
+            enter: function(manager, transition) { 
+                Em.run(function() { 
+                    $('#buckets').animate({width : '316px'}, {queue : false, duration : 300, complete : function () {
+                        $('#buckets').addClass('one-third-width').css('');
+                        $('#keys').slideDown();
+                    }});
+                });
+            },
+
+            exit: function(manager, transition) { 
+              Em.run(function() { 
+                  $('#keys').slideUp(300, function() { 
+                    $('#buckets').animate({width : '960px'}, {queue : true, duration : 300, complete : function () {
+                        $('#buckets').removeClass('one-third-width').css('');
+                    }});
+                  });
+              });
+            }
+        })
     })
 });
