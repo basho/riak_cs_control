@@ -74,7 +74,7 @@ App.keysController = Em.ArrayController.create({
  * Views
  */
 App.objectBrowserView = Em.View.create({
-  templateName: 'object-browser'
+    templateName: 'object-browser'
 });
 
 App.bucketsContainer = Em.View.create({
@@ -129,5 +129,5 @@ App.stateManager = Em.StateManager.create({
             App.bucketsController.loadBuckets();
             this._super(manager, transition);
         }
-      })
+    })
 });
