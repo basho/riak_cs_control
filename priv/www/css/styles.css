@@ -558,6 +558,8 @@ footer.constrained {
 
 .spinner {
     display: none;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 /* INITIAL SETUPS TO BE MANIPULATED BY JS */
