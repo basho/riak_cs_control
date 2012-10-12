@@ -1,107 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" media="all" href="css/styles.css">
+    <meta charset="UTF-8" />
+    <title>Riak CS</title>
+    <link rel="icon" type="image/vnd.microsoft.icon" href="/favicon.ico" />
+    <link type="text/css" rel="stylesheet" media="all" href="/css/styles.css" />
 </head>
+
 <body>
+    <script src="/js/generated/vendor.js"></script>
+    <script src="/js/generated/templates.js"></script>
 
-    <header class="constrained main-header">
-        <section class="half-width">
-            <div class="logo left">
-                SIMPLE, AVAILABLE, DISTRIBUTED CLOUD STORAGE.
-            </div>
-            <div class="clear"></div>
-        </section>
-        <div class="clear"></div>
-        <div class="block-container orange has-shadow">
-            <div class="orange-linear header-bar">
-                <div class="header-bar-icon account-large left"></div>
-                <h1 class="title">Browse Objects</h1>
-            </div>
-        </div>
-    </header>
+    <script src="/js/app.js"></script>
+    <script src="/js/router.js"></script>
 
-    <script type="text/x-handlebars" data-template-name="object-browser">
-      <section class="constrained info">
-          <div class="block-container white has-shadow" id="buckets">
-              <h1 class="title">Buckets</h1>
-              <p class="italic">Click on a bucket to view its keys.</p>
-              <div class="white-slab">
-                  <table class="info-table">
-                      <thead>
-                          <tr><th><h2 class="title">Bucket</h2></th></tr>
-                      </thead>
-                      <tbody id="bucket-list">
-                          {{#each App.bucketsController}}
-                              {{#view App.bucketListView contentBinding="this" classBinding="isSelectedRow:selected-row" class="standard-row"}}
-                                  {{#with content}}
-                                  <td>
-                                    <span class="riak-item">{{name}}</span>
-                                    </td>
-                                  {{/with}}
-                              {{/view}}
-                          {{/each}}
-                      </tbody>
-                  </table>
-              </div>
-          </div>
-          <div class="two-thirds-width block-container white has-shadow nudge-right" id="keys">
-              <h1 class="title">Keys</h1>
-              <p class="italic">
-                Viewing first 1000 objects.
-              </p>
-              <div class="white-slab">
-                  <table class="info-table">
-                      <thead>
-                          <tr>
-                              <th><h2 class="title">Name 
-                                  {{#view App.keysSpinner tagName="span"}}
-                                      <img class="spinner" src="images/spinner.gif">
-                                  {{/view}}
-                              </h2></th>
-                              <th><h2 class="title">Size</h2></th>
-                              <th><h2 class="title">Last Modified</h2></th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          {{#each App.keysController}}
-                              <tr class="standard-row">
-                                  <td><span class="riak-item">{{key}}</span></td>
-                                  <td>{{size}}</td>
-                                  <td>{{last_modified}}</td>
-                              </tr>
-                          {{/each}}
-                      </tbody>
-                  </table>
-              </div>
-          </div>
-          <div class="clear"></div>
-      </section>
-    </script>
-
-    <div id="container"></div>
-
-    <footer class="constrained">
-        <div class="block-container orange has-shadow">
-            <div class="footer-bar orange-linear">
-                <section class="half-width">
-                    <div class="left footer-info">Copyright &copy; 2012 Basho Technologies, Inc.</div>
-                </section>
-                <section class="half-width">
-                    <div class="right footer-info">
-                        <a class="riak-logo" href="http://www.basho.com">Poweredy by</a>
-                    </div>
-                </section>
-                <div class="clear"></div>
-            </div>
-        </div>
-    </footer>
-
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.2.min.js"><\/script>')</script>
-    <script src="js/libs/ember-0.9.7.1.min.js"></script>
-    <script src="js/app.js"></script>
-
+    <script>minispade.require('app');</script>
 </body>
 </html>
