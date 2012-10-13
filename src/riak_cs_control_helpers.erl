@@ -9,11 +9,17 @@
 -export([configure_s3_connection/0,
          iso8601/1]).
 
-configure_s3_connection() -> 
-    {ok, Hostname} = application:get_env(riak_cs_control, hostname),
-    {ok, AccessKeyId} = application:get_env(riak_cs_control, access_key_id),
-    {ok, SecretAccessKey} = application:get_env(riak_cs_control, secret_access_key),
-    erlcloud_s3:configure(AccessKeyId, SecretAccessKey, Hostname).
+configure_s3_connection() ->
+    Hostname = s3_configuration(hostname),
+    Port = s3_configuration(port),
+    Protocol = s3_configuration(protocol),
+    AccessKeyId = s3_configuration(access_key_id),
+    SecretAccessKey = s3_configuration(secret_access_key),
+    erlcloud_s3:configure(AccessKeyId, SecretAccessKey, Hostname, Port, Protocol).
+
+s3_configuration(Attribute) ->
+    {ok, Value} = application:get_env(riak_cs_control, Attribute),
+    Value.
 
 iso8601({{Y,M,D},{H,I,S}}) ->
     iolist_to_binary(

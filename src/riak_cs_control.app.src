@@ -13,10 +13,12 @@
                   mochiweb,
                   webmachine
                  ]},
-  {mod, { riak_cs_control_app, []}},
+  {mod, {riak_cs_control_app, []}},
   {env, [
-    {hostname, "s3.amazonaws.com"},
-    {access_key_id, "admin-key"},
-    {secret_access_key, "admin-secret"}
+    {hostname, "data.riakcs.net"},
+    {port, 8080},
+    {protocol, "http"},
+    {access_key_id, "V7IL25952VE6RKATQWTE"},
+    {secret_access_key, "N1QW7hL9dUBY_PezyaOSde9QDptX0DICS3Z9mg=="}
   ]}
  ]}.

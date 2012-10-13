@@ -15,6 +15,11 @@ minispade.register('app', function() {
     adapter: DS.RESTAdapter.create()
   });
 
+  RiakCsControl.User = DS.Model.extend();
+
+  RiakCsControl.UsersView = Ember.View.extend();
+  RiakCsControl.UsersController = Ember.ArrayController.extend();
+
   minispade.require('router');
 
 });
