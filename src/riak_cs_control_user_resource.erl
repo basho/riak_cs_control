@@ -30,8 +30,11 @@ allowed_methods(ReqData, Context) ->
 content_types_provided(ReqData, Context) ->
     {[{"application/json", to_json}], ReqData, Context}.
 
+key_id(ReqData) ->
+    wrq:path_info(key_id, ReqData).
+
 resource_exists(ReqData, Context) ->
-    case maybe_retrieve_user(Context, wrq:path_info(key_id, ReqData)) of
+    case maybe_retrieve_user(Context, key_id(ReqData)) of
         {true, NewContext} ->
             {true, ReqData, NewContext};
         {false, Context} ->
@@ -48,7 +51,8 @@ maybe_retrieve_user(Context, KeyId) ->
                     riak_cs_control_helpers:administration_bucket_name(),
                     "user/" ++ KeyId,
                     [{accept, "application/json"}]),
-                User = proplists:get_value(content, Response),
+                RawUser = proplists:get_value(content, Response),
+                User = mochijson2:decode(RawUser),
                 {true, Context#context{user=User}}
             catch
                 error:_ -> {false, Context}
@@ -59,11 +63,10 @@ maybe_retrieve_user(Context, KeyId) ->
 
 %% @doc Return serialized user.
 to_json(ReqData, Context) ->
-    Response = case maybe_retrieve_user(Context, wrq:path_info(key_id, ReqData)) of
+    Response = case maybe_retrieve_user(Context, key_id(ReqData)) of
         {true, NewContext} ->
-            RawJson = NewContext#context.user,
-            ParsedJson = mochijson2:decode(RawJson),
-            mochijson2:encode({struct, [{user, ParsedJson}]});
+            User = NewContext#context.user,
+            mochijson2:encode({struct, [{user, User}]});
         {false, Context} ->
             mochijson2:encode({struct, []})
     end,
