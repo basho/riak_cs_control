@@ -15,7 +15,16 @@ minispade.register('app', function() {
     adapter: DS.RESTAdapter.create()
   });
 
-  RiakCsControl.User = DS.Model.extend();
+  RiakCsControl.User = DS.Model.extend({
+    primaryKey: "key_id",
+    email: DS.attr("string"),
+    display_name: DS.attr("string"),
+    name: DS.attr("string"),
+    key_id: DS.attr("string"),
+    key_secret: DS.attr("string"),
+    id: DS.attr("string"),
+    status: DS.attr("string")
+  });
 
   RiakCsControl.UsersView = Ember.View.extend();
   RiakCsControl.UsersController = Ember.ArrayController.extend();
