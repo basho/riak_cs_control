@@ -58,7 +58,8 @@ maybe_retrieve_users(Context) ->
     end.
 
 %% @doc Strip leading carriage return and line feed so it's valid
-%% multipart/mixed.
+%% multipart/mixed (this is the body seperator which erlcloud is not
+%% properly handling).
 reformat_multipart(Content) ->
     list_to_binary(string:substr(binary_to_list(Content), 3)).
 
