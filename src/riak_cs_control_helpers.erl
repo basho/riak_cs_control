@@ -7,6 +7,7 @@
 -author('Christopher Meiklejohn <christopher.meiklejohn@gmail.com>').
 
 -export([configure_s3_connection/0,
+         administration_bucket_name/0,
          iso8601/1]).
 
 configure_s3_connection() ->
@@ -16,6 +17,9 @@ configure_s3_connection() ->
     AccessKeyId = s3_configuration(access_key_id),
     SecretAccessKey = s3_configuration(secret_access_key),
     erlcloud_s3:configure(AccessKeyId, SecretAccessKey, Hostname, Port, Protocol).
+
+administration_bucket_name() ->
+    s3_configuration(administration_bucket).
 
 s3_configuration(Attribute) ->
     {ok, Value} = application:get_env(riak_cs_control, Attribute),
