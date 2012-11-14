@@ -13,7 +13,9 @@
 -export([init/1,
          allowed_methods/2,
          content_types_provided/2,
+         content_types_accepted/2,
          resource_exists/2,
+         from_json/2,
          to_json/2]).
 
 -include_lib("webmachine/include/webmachine.hrl").
@@ -25,14 +27,20 @@ init([]) ->
     {ok, #context{user=undefined}}.
 
 allowed_methods(ReqData, Context) ->
-    {['HEAD', 'GET'], ReqData, Context}.
+    {['HEAD', 'GET', 'PUT'], ReqData, Context}.
 
 content_types_provided(ReqData, Context) ->
     {[{"application/json", to_json}], ReqData, Context}.
 
+content_types_accepted(ReqData, Context) ->
+    {[{"application/json", from_json}], ReqData, Context}.
+
+%% @doc Extract key_id out of the request.
 key_id(ReqData) ->
     wrq:path_info(key_id, ReqData).
 
+%% @doc Eagerly fetch user and store in the context; conditionally return
+%% on the user existing.
 resource_exists(ReqData, Context) ->
     case maybe_retrieve_user(Context, key_id(ReqData)) of
         {true, NewContext} ->
@@ -42,7 +50,7 @@ resource_exists(ReqData, Context) ->
     end.
 
 %% @doc Attempt to retrieve the user or return an exception if it doesn't
-%% exist.
+%% exist. On all errors from riak-cs, return 404 for now.
 maybe_retrieve_user(Context, KeyId) ->
     case Context#context.user of
         undefined ->
@@ -52,25 +60,54 @@ maybe_retrieve_user(Context, KeyId) ->
                     "user/" ++ KeyId,
                     [{accept, "application/json"}]),
                 RawUser = proplists:get_value(content, Response),
-                User = mochijson2:decode(RawUser),
+                {struct, User} = mochijson2:decode(RawUser),
                 {true, Context#context{user=User}}
             catch
-                error:_ -> {false, Context}
+                error:_ ->
+                    {false, Context}
             end;
         _User ->
             {true, Context}
     end.
 
+%% @doc Handle updates on a per user basis.
+from_json(ReqData, Context) ->
+    KeyId = key_id(ReqData),
+    case maybe_retrieve_user(Context, KeyId) of
+        {true, NewContext} ->
+            try
+                Attributes = wrq:req_body(ReqData),
+                {_Headers, Body} = erlcloud_s3:put_object(
+                    riak_cs_control_helpers:administration_bucket_name(),
+                    "user/" ++ KeyId,
+                    Attributes,
+                    [{return_response, true}],
+                    [{"content-type", "application/json"}]),
+            io:format("", Body),
+                UpdatedAttributes = mochijson2:decode(Body),
+                Response = mochijson2:encode({struct, [{user, UpdatedAttributes}]}),
+                {Response, ReqData, NewContext}
+            catch
+                error:_ ->
+                    FailedResponse = mochijson2:encode({struct, []}),
+                    {FailedResponse, ReqData, Context}
+            end;
+        {false, Context} ->
+            Response = mochijson2:encode({struct, []}),
+            {Response, ReqData, Context}
+    end.
+
 %% @doc Return serialized user.
 to_json(ReqData, Context) ->
-    Response = case maybe_retrieve_user(Context, key_id(ReqData)) of
+    case maybe_retrieve_user(Context, key_id(ReqData)) of
         {true, NewContext} ->
             User = NewContext#context.user,
-            mochijson2:encode({struct, [{user, User}]});
+            Response = mochijson2:encode({struct, [{user, {struct, User}}]}),
+            {Response, ReqData, NewContext};
         {false, Context} ->
-            mochijson2:encode({struct, []})
-    end,
-    {Response, ReqData, Context}.
+            Response = mochijson2:encode({struct, []}),
+            {Response, ReqData, Context}
+    end.
 
 -ifdef(TEST).
 -endif.
