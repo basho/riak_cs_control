@@ -96,7 +96,7 @@ from_json(ReqData, Context) ->
                 {{halt, 204}, NewReqData, NewContext}
             catch
                 error:_ ->
-                    {{halt, 404}, ReqData, Context}
+                    {{halt, 500}, ReqData, Context}
             end;
         {false, Context} ->
             {{halt, 404}, ReqData, Context}
