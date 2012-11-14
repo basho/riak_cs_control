@@ -1,6 +1,6 @@
 # Riak CS Control
 
-Lightweight webmachine-based object browser for Riak CS.
+Webmachine-based administration interface for Riak CS.
 
 ## Setup
 
