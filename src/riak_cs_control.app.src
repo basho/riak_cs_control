@@ -15,11 +15,11 @@
                  ]},
   {mod, {riak_cs_control_app, []}},
   {env, [
-    {hostname, "data.riakcs.net"},
+    {hostname, "localhost"},
     {port, 8080},
     {protocol, "http"},
-    {access_key_id, "V7IL25952VE6RKATQWTE"},
-    {secret_access_key, "N1QW7hL9dUBY_PezyaOSde9QDptX0DICS3Z9mg=="},
+    {access_key_id, "P-HD_X-8RCY56VAR7AET"},
+    {secret_access_key, "X5C6HKvk2TPh9huHgUFd-q69L4RgE1g9j1ZBCg=="},
     {administration_bucket, "riak-cs"}
   ]}
  ]}.
