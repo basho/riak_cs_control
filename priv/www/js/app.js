@@ -26,7 +26,17 @@ minispade.register('app', function() {
     status: DS.attr("string")
   });
 
-  RiakCsControl.UsersView = Ember.View.extend();
+  RiakCsControl.UsersView = Ember.View.extend({
+    templateName: 'users'
+  });
+
+  RiakCsControl.UsersCollectionView = Ember.CollectionView.extend({
+      tagName: 'tbody',
+      itemViewClass: Ember.View.extend({
+          templateName: 'user'
+      })
+  });
+
   RiakCsControl.UsersController = Ember.ArrayController.extend();
 
   minispade.require('router');

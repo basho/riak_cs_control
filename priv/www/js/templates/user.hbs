@@ -1,0 +1,9 @@
+{{#with view.content}}
+    <td class="capitalize">{{status}}</td>
+    <td>{{name}}</td>
+    <td>{{email}}</td>
+    <td><span class="display-item full-width gray">{{key_id}}</span></td>
+    <td class="button-cell">
+      <a href="#" class="row-button-edit" {{action "viewUserAccount"}}>Details</a>
+    </td>
+{{/with}}

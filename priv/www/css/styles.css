@@ -362,6 +362,7 @@ table {
     border-left: 3px solid #fff;
     width: 75px;
     position: relative;
+    text-transform: uppercase;
 }
 
 .row-button-reset {
@@ -382,7 +383,7 @@ table {
     display: block;
     background: url(../images/row-edit-sprite.png) left top no-repeat transparent;
     color: #888;
-    padding: 1px 0 0 15px;
+    padding: 1px 0 0 25px;
     margin-left: 2px;
 }
 .row-button-edit:hover {
@@ -824,4 +825,8 @@ footer.constrained {
 
 #keys {
     display: none;
+}
+
+.capitalize {
+    text-transform: capitalize;
 }
