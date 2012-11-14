@@ -55,10 +55,7 @@ maybe_retrieve_user(Context, KeyId) ->
     case Context#context.user of
         undefined ->
             try
-                Response = erlcloud_s3:get_object(
-                    riak_cs_control_helpers:administration_bucket_name(),
-                    "user/" ++ KeyId,
-                    [{accept, "application/json"}]),
+                Response = retrieve_user(KeyId),
                 RawUser = proplists:get_value(content, Response),
                 {struct, User} = mochijson2:decode(RawUser),
                 {true, Context#context{user=User}}
@@ -70,6 +67,22 @@ maybe_retrieve_user(Context, KeyId) ->
             {true, Context}
     end.
 
+%% @doc Retrieve user object.
+retrieve_user(KeyId) ->
+    erlcloud_s3:get_object(
+        riak_cs_control_helpers:administration_bucket_name(),
+        "user/" ++ KeyId,
+        [{accept, "application/json"}]).
+
+%% @doc Store user object.
+store_user(KeyId, Attributes) ->
+    erlcloud_s3:put_object(
+        riak_cs_control_helpers:administration_bucket_name(),
+        "user/" ++ KeyId,
+        Attributes,
+        [{return_response, true}],
+        [{"content-type", "application/json"}]).
+
 %% @doc Handle updates on a per user basis.
 from_json(ReqData, Context) ->
     KeyId = key_id(ReqData),
@@ -77,24 +90,16 @@ from_json(ReqData, Context) ->
         {true, NewContext} ->
             try
                 Attributes = wrq:req_body(ReqData),
-                {_Headers, Body} = erlcloud_s3:put_object(
-                    riak_cs_control_helpers:administration_bucket_name(),
-                    "user/" ++ KeyId,
-                    Attributes,
-                    [{return_response, true}],
-                    [{"content-type", "application/json"}]),
-            io:format("", Body),
-                UpdatedAttributes = mochijson2:decode(Body),
-                Response = mochijson2:encode({struct, [{user, UpdatedAttributes}]}),
-                {Response, ReqData, NewContext}
+                {_Headers, _Body} = store_user(KeyId, Attributes),
+                Resource = "/users/" ++ KeyId,
+                NewReqData = wrq:set_resp_header("Location", Resource, ReqData),
+                {{halt, 204}, NewReqData, NewContext}
             catch
                 error:_ ->
-                    FailedResponse = mochijson2:encode({struct, []}),
-                    {FailedResponse, ReqData, Context}
+                    {{halt, 404}, ReqData, Context}
             end;
         {false, Context} ->
-            Response = mochijson2:encode({struct, []}),
-            {Response, ReqData, Context}
+            {{halt, 404}, ReqData, Context}
     end.
 
 %% @doc Return serialized user.
