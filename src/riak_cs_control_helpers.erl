@@ -17,19 +17,19 @@
          iso8601/1]).
 
 configure_s3_connection() ->
-    Hostname = s3_configuration(hostname),
-    Port = s3_configuration(port),
-    Protocol = s3_configuration(protocol),
-    AccessKeyId = s3_configuration(access_key_id),
-    SecretAccessKey = s3_configuration(secret_access_key),
-    erlcloud_s3:configure(AccessKeyId,
-                          SecretAccessKey,
-                          Hostname,
-                          Port,
-                          Protocol).
+    RiakCsHostname = s3_configuration(riak_cs_hostname),
+    RiakCsPort = s3_configuration(riak_cs_port),
+    RiakCsProtocol = s3_configuration(riak_cs_protocol),
+    RiakCsAccessKeyId = s3_configuration(riak_cs_access_key_id),
+    RiakCsSecretAccessKey = s3_configuration(riak_cs_secret_access_key),
+    erlcloud_s3:configure(RiakCsAccessKeyId,
+                          RiakCsSecretAccessKey,
+                          RiakCsHostname,
+                          RiakCsPort,
+                          RiakCsProtocol).
 
 administration_bucket_name() ->
-    s3_configuration(administration_bucket).
+    s3_configuration(riak_cs_administration_bucket).
 
 s3_configuration(Attribute) ->
     {ok, Value} = application:get_env(riak_cs_control, Attribute),
