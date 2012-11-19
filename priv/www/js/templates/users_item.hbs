@@ -1,9 +1,12 @@
 {{#with view.content}}
-    <td><span class="display-item gray">{{key_id}}</span></td>
-    <td class="capitalize">{{status}}</td>
     <td>{{name}}</td>
     <td>{{email}}</td>
+    <td><span class="display-item gray">{{key_id}}</span></td>
+    <td><span class="display-item gray">{{key_secret}}</span></td>
     <td class="button-cell">
-      <a class="row-button-edit" {{action "viewUser" this href=true}}>Details</a>
+      <a class="row-button-edit" href="#">Disable</a>
+    </td>
+    <td class="button-cell">
+      <a class="row-button-edit" href="#">Revoke</a>
     </td>
 {{/with}}
