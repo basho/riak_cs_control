@@ -7,23 +7,17 @@ minispade.register('router', function() {
         redirectsTo: 'users.index'
       }),
 
+      viewUsers: Ember.Route.transitionTo('users.index'),
+
       users: Ember.Route.extend({
         route: '/users',
 
+        connectOutlets: function(router, context) {
+          router.get('applicationController').connectOutlet('users', RiakCsControl.User.find());
+        },
+
         index: Ember.Route.extend({
-          route: '/',
-
-          connectOutlets: function(router, context) {
-            router.get('applicationController').connectOutlet('users', RiakCsControl.User.find());
-          }
-        }),
-
-        show: Ember.Route.extend({
-          route: '/:user_id',
-
-          connectOutlets: function(router, context) {
-            router.get('applicationController').connectOutlet('users', context);
-          }
+          route: '/'
         })
       })
     })

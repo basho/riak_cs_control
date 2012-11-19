@@ -1,10 +1,16 @@
-%% @author Christopher Meiklejohn <christopher.meiklejohn@gmail.com>
-%% @copyright 2012 Christopher Meiklejohn.
+%% -------------------------------------------------------------------
+%%
+%% Copyright (c) 2007-2012 Basho Technologies, Inc.  All Rights Reserved.
+%%
+%% -------------------------------------------------------------------
+
+%% @author Christopher Meiklejohn <cmeiklejohn@basho.com>
+%% @copyright 2012 Basho Technologies, Inc.
 
 %% @doc Riak CS control application.
 
 -module(riak_cs_control).
--author('Christopher Meiklejohn <christopher.meiklejohn@gmail.com>').
+-author('Christopher Meiklejohn <cmeiklejohn@basho.com>').
 
 -export([start/0, start_link/0, stop/0]).
 
