@@ -22,7 +22,11 @@ configure_s3_connection() ->
     Protocol = s3_configuration(protocol),
     AccessKeyId = s3_configuration(access_key_id),
     SecretAccessKey = s3_configuration(secret_access_key),
-    erlcloud_s3:configure(AccessKeyId, SecretAccessKey, Hostname, Port, Protocol).
+    erlcloud_s3:configure(AccessKeyId,
+                          SecretAccessKey,
+                          Hostname,
+                          Port,
+                          Protocol).
 
 administration_bucket_name() ->
     s3_configuration(administration_bucket).
