@@ -9,7 +9,7 @@
 
 %% @doc Resource to serve static assets.
 
--module(riak_cs_control_asset_resource).
+-module(riak_cs_control_wm_asset).
 -author('Christopher Meiklejohn <cmeiklejohn@basho.com>').
 
 -export([init/1,

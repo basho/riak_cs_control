@@ -9,7 +9,7 @@
 
 %% @doc Resource to manage users.
 
--module(riak_cs_control_users_resource).
+-module(riak_cs_control_wm_users).
 -author('Christopher Meiklejohn <cmeiklejohn@basho.com>').
 
 -ifdef(TEST).
