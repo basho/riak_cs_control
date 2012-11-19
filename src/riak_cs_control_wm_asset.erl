@@ -1,10 +1,16 @@
-%% @author Christopher Meiklejohn <christopher.meiklejohn@gmail.com>
-%% @copyright 2012 Christopher Meiklejohn.
+%% -------------------------------------------------------------------
+%%
+%% Copyright (c) 2007-2012 Basho Technologies, Inc.  All Rights Reserved.
+%%
+%% -------------------------------------------------------------------
+
+%% @author Christopher Meiklejohn <cmeiklejohn@basho.com>
+%% @copyright 2012 Basho Technologies, Inc.
 
 %% @doc Resource to serve static assets.
 
--module(riak_cs_control_asset_resource).
--author('Christopher Meiklejohn <christopher.meiklejohn@gmail.com>').
+-module(riak_cs_control_wm_asset).
+-author('Christopher Meiklejohn <cmeiklejohn@basho.com>').
 
 -export([init/1,
          allowed_methods/2,
