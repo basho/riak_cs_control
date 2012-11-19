@@ -1,7 +1,7 @@
 %%-*- mode: erlang -*-
 {application, riak_cs_control,
  [
-  {description, "Riak CS administrative application."},
+  {description, "Webmachine-based administration interface for Riak CS."},
   {vsn, "1"},
   {modules, []},
   {registered, []},
