@@ -1,10 +1,16 @@
-%% @author Christopher Meiklejohn <christopher.meiklejohn@gmail.com>
-%% @copyright 2012 Christopher Meiklejohn.
+%% -------------------------------------------------------------------
+%%
+%% Copyright (c) 2007-2012 Basho Technologies, Inc.  All Rights Reserved.
+%%
+%% -------------------------------------------------------------------
+
+%% @author Christopher Meiklejohn <cmeiklejohn@basho.com>
+%% @copyright 2012 Basho Technologies, Inc.
 
 %% @doc Helpers.
 
 -module(riak_cs_control_helpers).
--author('Christopher Meiklejohn <christopher.meiklejohn@gmail.com>').
+-author('Christopher Meiklejohn <cmeiklejohn@basho.com>').
 
 -export([configure_s3_connection/0,
          administration_bucket_name/0,
