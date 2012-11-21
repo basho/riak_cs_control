@@ -22,11 +22,15 @@ configure_s3_connection() ->
     RiakCsProtocol = s3_configuration(riak_cs_protocol),
     RiakCsAccessKeyId = s3_configuration(riak_cs_access_key_id),
     RiakCsSecretAccessKey = s3_configuration(riak_cs_secret_access_key),
+    RiakCsProxyHost = s3_configuration(riak_cs_proxy_host, ""),
+    RiakCsProxyPort = s3_configuration(riak_cs_proxy_port, 0),
     erlcloud_s3:configure(RiakCsAccessKeyId,
                           RiakCsSecretAccessKey,
                           RiakCsHostname,
                           RiakCsPort,
-                          RiakCsProtocol).
+                          RiakCsProtocol,
+                          RiakCsProxyHost,
+                          RiakCsProxyPort).
 
 administration_bucket_name() ->
     s3_configuration(riak_cs_administration_bucket).
@@ -34,6 +38,14 @@ administration_bucket_name() ->
 s3_configuration(Attribute) ->
     {ok, Value} = application:get_env(riak_cs_control, Attribute),
     Value.
+
+s3_configuration(Attribute, Default) ->
+    case application:get_env(riak_cs_control, Attribute) of
+        {ok, Value} ->
+            Value;
+        undefined ->
+            Default
+    end.
 
 iso8601({{Y,M,D},{H,I,S}}) ->
     iolist_to_binary(
