@@ -26,22 +26,33 @@ minispade.register('app', function() {
       }
   });
 
+  RiakCsControl.Adapter = DS.RESTAdapter.extend({});
+
   RiakCsControl.Store = DS.Store.extend({
     revision: 4,
-    adapter: DS.RESTAdapter.create()
+    adapter: RiakCsControl.Adapter.create()
   });
 
   RiakCsControl.store = RiakCsControl.Store.create({});
 
   RiakCsControl.User = DS.Model.extend({
     primaryKey: "key_id",
-    email: DS.attr("string"),
-    display_name: DS.attr("string"),
+
+    // We don't use ID in the app right now, so ignore it and alias the
+    // key_id to the id to work around outstanding ember-data bugs.
+    //
+    // id: DS.attr("string"),
+    id: function() {
+      return this.get('key_id');
+    }.property('key_id'),
+
     name: DS.attr("string"),
+    email: DS.attr("string"),
     key_id: DS.attr("string"),
     key_secret: DS.attr("string"),
+    display_name: DS.attr("string"),
     new_key_secret: DS.attr("string"),
-    id: DS.attr("string"),
+
     status: DS.attr("string"),
 
     disable: function() {
@@ -50,26 +61,58 @@ minispade.register('app', function() {
 
     revoke: function() {
       this.set('new_key_secret', 'true');
-    },
-
-  RiakCsControl.UserView = Ember.View.extend({
-    templateName: 'user'
+    }
   });
 
   RiakCsControl.UsersView = Ember.View.extend({
     templateName: 'users'
   });
 
-  RiakCsControl.UsersCollectionView = Ember.CollectionView.extend({
-      tagName: 'tbody',
-      itemViewClass: Ember.View.extend({
-          templateName: 'users_item'
-      })
+  RiakCsControl.UserItemView = Ember.View.extend({
+    templateName: 'users_item',
+
+    key_secret: function() {
+      var key_secret = this.get('content.key_secret');
+      var new_key_secret = this.get('content.new_key_secret');
+
+      if(new_key_secret) {
+        return 'Revoking...';
+      } else {
+        return key_secret;
+      }
+    }.property('content.key_secret', 'content.new_key_secret'),
+
+    disableUser: function(ev) {
+      ev.preventDefault();
+
+      var store = RiakCsControl.get('store');
+      var transaction = store.transaction();
+      var user = ev.context;
+
+      transaction.add(user);
+      user.disable();
+      transaction.commit();
+    },
+
+    revokeCredentials: function(ev) {
+      ev.preventDefault();
+
+      var store = RiakCsControl.get('store');
+      var transaction = store.transaction();
+      var user = ev.context;
+
+      transaction.add(user);
+      user.revoke();
+      transaction.commit();
+    }
   });
 
-  RiakCsControl.UsersController = Ember.ArrayController.extend();
+  RiakCsControl.UsersCollectionView = Ember.CollectionView.extend({
+    tagName: 'tbody',
+    itemViewClass: RiakCsControl.UserItemView
+  });
 
-  RiakCsControl.UserController = Ember.ObjectController.extend();
+  RiakCsControl.UsersController = Ember.ArrayController.extend({});
 
   minispade.require('router');
 
