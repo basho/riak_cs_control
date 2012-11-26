@@ -93,28 +93,7 @@ minispade.register('app', function() {
       var new_key_secret = this.get('content.new_key_secret');
 
       return new_key_secret ? "Revoking, please wait..." : key_secret;
-    }.property('content.key_secret', 'content.new_key_secret'),
-
-    disableUser: function(ev) {
-      ev.preventDefault();
-
-      var controller = this.get('controller');
-      controller.disableUser(ev.context);
-    },
-
-    enableUser: function(ev) {
-      ev.preventDefault();
-
-      var controller = this.get('controller');
-      controller.enableUser(ev.context);
-    },
-
-    revokeCredentials: function(ev) {
-      ev.preventDefault();
-
-      var controller = this.get('controller');
-      controller.revokeCredentials(ev.context);
-    }
+    }.property('content.key_secret', 'content.new_key_secret')
   });
 
   RiakCsControl.UsersCollectionView = Ember.CollectionView.extend({
@@ -124,30 +103,37 @@ minispade.register('app', function() {
 
   RiakCsControl.UsersController = Ember.ArrayController.extend({
     enableUser: function(user) {
-      var store = RiakCsControl.get('store');
-      var transaction = store.transaction();
-
-      transaction.add(user);
-      user.enable();
-      transaction.commit();
+      this.performUserUpdate(user, function() { user.enable(); });
     },
 
     disableUser: function(user) {
-      var store = RiakCsControl.get('store');
-      var transaction = store.transaction();
-
-      transaction.add(user);
-      user.disable();
-      transaction.commit();
+      this.performUserUpdate(user, function() { user.disable(); });
     },
 
     revokeCredentials: function(user) {
+      this.performUserUpdate(user, function() { user.revoke(); });
+    },
+
+    performUserUpdate: function(user, update) {
       var store = RiakCsControl.get('store');
       var transaction = store.transaction();
 
       transaction.add(user);
-      user.revoke();
+      update.call(user);
       transaction.commit();
+    }
+  });
+
+  RiakCsControl.ButtonView = Ember.View.extend({
+    tagName: 'td',
+    templateName: 'button',
+    classNames: 'button-cell',
+    click: function(ev) {
+      ev.preventDefault();
+      var fun = this.get('function');
+      var controller = this.get('controller');
+      var user = this.get('content');
+      fun.call(controller, user);
     }
   });
 
