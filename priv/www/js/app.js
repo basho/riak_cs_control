@@ -51,7 +51,7 @@ minispade.register('app', function() {
     key_id: DS.attr("string"),
     key_secret: DS.attr("string"),
     display_name: DS.attr("string"),
-    new_key_secret: DS.attr("string"),
+    new_key_secret: DS.attr("boolean"),
 
     status: DS.attr("string"),
 
@@ -63,8 +63,16 @@ minispade.register('app', function() {
       this.set('status', 'disabled');
     },
 
+    enable: function() {
+      this.set('status', 'enabled');
+    },
+
     revoke: function() {
-      this.set('new_key_secret', 'true');
+      this.set('new_key_secret', true);
+    },
+
+    didUpdate: function() {
+      this.reload();
     }
   });
 
@@ -115,15 +123,13 @@ minispade.register('app', function() {
   });
 
   RiakCsControl.UsersController = Ember.ArrayController.extend({
-    enableUSer: function(user) {
+    enableUser: function(user) {
       var store = RiakCsControl.get('store');
       var transaction = store.transaction();
 
       transaction.add(user);
       user.enable();
       transaction.commit();
-
-      user.reload();
     },
 
     disableUser: function(user) {
@@ -133,8 +139,6 @@ minispade.register('app', function() {
       transaction.add(user);
       user.disable();
       transaction.commit();
-
-      user.reload();
     },
 
     revokeCredentials: function(user) {
@@ -144,8 +148,6 @@ minispade.register('app', function() {
       transaction.add(user);
       user.revoke();
       transaction.commit();
-
-      user.reload();
     }
   });
 

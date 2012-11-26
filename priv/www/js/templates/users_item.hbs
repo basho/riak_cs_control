@@ -1,19 +1,22 @@
 {{#with view}}
     <td>{{content.name}}</td>
     <td>{{content.email}}</td>
+
     <td><span class="display-item gray">{{content.key_id}}</span></td>
     <td><span class="display-item gray">{{key_secret}}</span></td>
+
     {{#if content.isDisabled}}
-    <td class="button-cell">
-      <a class="row-button-edit" {{action "enableUser" content
-        target="this" href=true}}>Enable</a>
-    </td>
+      <td class="button-cell">
+        <a class="row-button-edit" {{action "enableUser" content
+          target="this" href=true}}>Enable</a>
+      </td>
     {{else}}
       <td class="button-cell">
         <a class="row-button-edit" {{action "disableUser" content
           target="this" href=true}}>Disable</a>
       </td>
     {{/if}}
+
     <td class="button-cell">
       <a class="row-button-edit" {{action "revokeCredentials" content
         target="this" href=true}}>Revoke</a>
