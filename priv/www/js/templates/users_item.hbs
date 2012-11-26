@@ -1,12 +1,14 @@
-{{#with view.content}}
-    <td>{{name}}</td>
-    <td>{{email}}</td>
-    <td><span class="display-item gray">{{key_id}}</span></td>
+{{#with view}}
+    <td>{{content.name}}</td>
+    <td>{{content.email}}</td>
+    <td><span class="display-item gray">{{content.key_id}}</span></td>
     <td><span class="display-item gray">{{key_secret}}</span></td>
     <td class="button-cell">
-      <a class="row-button-edit" href="#">Disable</a>
+      <a class="row-button-edit" {{action "disableUser" content
+        target="this" href=true}}>Disable</a>
     </td>
     <td class="button-cell">
-      <a class="row-button-edit" href="#">Revoke</a>
+      <a class="row-button-edit" {{action "revokeCredentials" content
+        target="this" href=true}}>Revoke</a>
     </td>
 {{/with}}
