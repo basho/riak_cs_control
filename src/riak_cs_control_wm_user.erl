@@ -82,10 +82,12 @@ retrieve_user(KeyId) ->
 
 %% @doc Store user object.
 store_user(KeyId, Attributes) ->
+    {struct, [{<<"user">>, DecodedAttributes}]} = mochijson2:decode(Attributes),
+    EncodedAttributes = mochijson2:encode(DecodedAttributes),
     erlcloud_s3:put_object(
         riak_cs_control_helpers:administration_bucket_name(),
         "user/" ++ KeyId,
-        Attributes,
+        EncodedAttributes,
         [{return_response, true}],
         [{"content-type", "application/json"}]).
 

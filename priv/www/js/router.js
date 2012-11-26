@@ -13,7 +13,8 @@ minispade.register('router', function() {
         route: '/users',
 
         connectOutlets: function(router, context) {
-          router.get('applicationController').connectOutlet('users', RiakCsControl.User.find());
+          router.get('applicationController').
+            connectOutlet('users', RiakCsControl.User.find());
         },
 
         index: Ember.Route.extend({
