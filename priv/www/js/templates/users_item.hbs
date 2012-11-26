@@ -7,18 +7,18 @@
 
     {{#if content.isDisabled}}
       {{view RiakCsControl.ButtonView
-              updateText="Enable"
+              label="Enable"
               contentBinding="content"
-              functionBinding="controller.enableUser"}}
+              target="enableUser"}}
     {{else}}
       {{view RiakCsControl.ButtonView
-              updateText="Disable"
+              label="Disable"
               contentBinding="content"
-              functionBinding="controller.disableUser"}}
+              target="disableUser"}}
     {{/if}}
 
     {{view RiakCsControl.ButtonView
-            updateText="Revoke"
+            label="Revoke"
             contentBinding="content"
-            functionBinding="controller.revokeCredentials"}}
+            target="revokeCredentials"}}
 {{/with}}
