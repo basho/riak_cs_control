@@ -130,11 +130,11 @@ minispade.register('app', function() {
     classNames: 'button-cell',
     click: function(ev) {
       ev.preventDefault();
-      var user = this.get('content');
+      var content = this.get('content');
       var target = this.get('target');
       var controller = this.get('controller');
       var action = this.get('controller.' + target);
-      action.call(controller, user);
+      action.call(controller, content);
     }
   });
 
