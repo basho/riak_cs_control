@@ -55,6 +55,10 @@ minispade.register('app', function() {
 
     status: DS.attr("string"),
 
+    isDisabled: function() {
+      return this.get('status') === 'disabled';
+    }.property('status'),
+
     disable: function() {
       this.set('status', 'disabled');
     },
@@ -70,6 +74,11 @@ minispade.register('app', function() {
 
   RiakCsControl.UserItemView = Ember.View.extend({
     templateName: 'users_item',
+    classNameBindings: 'isDisabled:disabled',
+
+    isDisabled: function() {
+      return this.get('content.isDisabled');
+    }.property('content.status'),
 
     key_secret: function() {
       var key_secret = this.get('content.key_secret');
@@ -83,6 +92,13 @@ minispade.register('app', function() {
 
       var controller = this.get('controller');
       controller.disableUser(ev.context);
+    },
+
+    enableUser: function(ev) {
+      ev.preventDefault();
+
+      var controller = this.get('controller');
+      controller.enableUser(ev.context);
     },
 
     revokeCredentials: function(ev) {
@@ -99,6 +115,17 @@ minispade.register('app', function() {
   });
 
   RiakCsControl.UsersController = Ember.ArrayController.extend({
+    enableUSer: function(user) {
+      var store = RiakCsControl.get('store');
+      var transaction = store.transaction();
+
+      transaction.add(user);
+      user.enable();
+      transaction.commit();
+
+      user.reload();
+    },
+
     disableUser: function(user) {
       var store = RiakCsControl.get('store');
       var transaction = store.transaction();
