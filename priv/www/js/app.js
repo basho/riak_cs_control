@@ -31,6 +31,8 @@ minispade.register('app', function() {
     adapter: DS.RESTAdapter.create()
   });
 
+  RiakCsControl.store = RiakCsControl.Store.create({});
+
   RiakCsControl.User = DS.Model.extend({
     primaryKey: "key_id",
     email: DS.attr("string"),
