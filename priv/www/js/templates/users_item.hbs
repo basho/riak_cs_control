@@ -1,9 +1,9 @@
 {{#with view}}
-    <td>{{content.name}}</td>
-    <td>{{content.email}}</td>
+    <td>{{name}}</td>
+    <td>{{email}}</td>
 
-    <td><span class="display-item gray">{{content.key_id}}</span></td>
-    <td><span class="display-item gray">{{key_secret}}</span></td>
+    <td><span class="display-item gray">{{keyId}}</span></td>
+    <td><span class="display-item gray">{{keySecret}}</span></td>
 
     {{#if content.isDisabled}}
       {{view RiakCsControl.ButtonView
