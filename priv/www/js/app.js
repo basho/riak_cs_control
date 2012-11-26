@@ -75,35 +75,21 @@ minispade.register('app', function() {
       var key_secret = this.get('content.key_secret');
       var new_key_secret = this.get('content.new_key_secret');
 
-      if(new_key_secret) {
-        return 'Revoking...';
-      } else {
-        return key_secret;
-      }
+      return new_key_secret ? "Revoking, please wait..." : key_secret;
     }.property('content.key_secret', 'content.new_key_secret'),
 
     disableUser: function(ev) {
       ev.preventDefault();
 
-      var store = RiakCsControl.get('store');
-      var transaction = store.transaction();
-      var user = ev.context;
-
-      transaction.add(user);
-      user.disable();
-      transaction.commit();
+      var controller = this.get('controller');
+      controller.disableUser(ev.context);
     },
 
     revokeCredentials: function(ev) {
       ev.preventDefault();
 
-      var store = RiakCsControl.get('store');
-      var transaction = store.transaction();
-      var user = ev.context;
-
-      transaction.add(user);
-      user.revoke();
-      transaction.commit();
+      var controller = this.get('controller');
+      controller.revokeCredentials(ev.context);
     }
   });
 
@@ -112,7 +98,29 @@ minispade.register('app', function() {
     itemViewClass: RiakCsControl.UserItemView
   });
 
-  RiakCsControl.UsersController = Ember.ArrayController.extend({});
+  RiakCsControl.UsersController = Ember.ArrayController.extend({
+    disableUser: function(user) {
+      var store = RiakCsControl.get('store');
+      var transaction = store.transaction();
+
+      transaction.add(user);
+      user.disable();
+      transaction.commit();
+
+      user.reload();
+    },
+
+    revokeCredentials: function(user) {
+      var store = RiakCsControl.get('store');
+      var transaction = store.transaction();
+
+      transaction.add(user);
+      user.revoke();
+      transaction.commit();
+
+      user.reload();
+    }
+  });
 
   minispade.require('router');
 
