@@ -40,9 +40,17 @@ minispade.register('app', function() {
     name: DS.attr("string"),
     key_id: DS.attr("string"),
     key_secret: DS.attr("string"),
+    new_key_secret: DS.attr("string"),
     id: DS.attr("string"),
-    status: DS.attr("string")
-  });
+    status: DS.attr("string"),
+
+    disable: function() {
+      this.set('status', 'disabled');
+    },
+
+    revoke: function() {
+      this.set('new_key_secret', 'true');
+    },
 
   RiakCsControl.UserView = Ember.View.extend({
     templateName: 'user'
