@@ -38,10 +38,6 @@ minispade.register('models', function() {
 
     didUpdate: function() {
       this.reload();
-    },
-
-    didCreate: function() {
-      this.reload();
     }
   });
 
