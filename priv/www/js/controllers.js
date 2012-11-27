@@ -13,11 +13,13 @@ minispade.register('controllers', function() {
       this.transaction.commit();
       this.transaction = null;
 
-      this.get('content').addObserver('id', this, 'showUsers');
+      this.get('content').addObserver('id', this, 'viewUsers');
     },
 
     exit: function() {
-      this.transaction.rollback();
+      if(this.transaction) {
+        this.transaction.rollback();
+      }
       this.transaction = null;
     },
 
