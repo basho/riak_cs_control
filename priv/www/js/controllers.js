@@ -2,6 +2,24 @@ minispade.register('controllers', function() {
 
   RiakCsControl.ApplicationController = Ember.Controller.extend();
 
+  RiakCsControl.CreateUserController = Ember.ObjectController.extend({
+    enter: function() {
+      this.transaction = this.get('store').transaction();
+      this.set('content',
+        this.transaction.createRecord(RiakCsControl.User, {}));
+    },
+
+    createUser: function() {
+      this.transaction.commit();
+      this.transaction = null;
+    },
+
+    exit: function() {
+      this.transaction.rollback();
+      this.transaction = null;
+    }
+  });
+
   RiakCsControl.UsersController = Ember.ArrayController.extend({
     persistedUsers: function() {
       return this.get('content').filterProperty('isNew', false);
@@ -20,8 +38,7 @@ minispade.register('controllers', function() {
     },
 
     performUserUpdate: function(user, update) {
-      var store = RiakCsControl.get('store');
-      var transaction = store.transaction();
+      var transaction = RiakCsControl.get('store').transaction();
 
       transaction.add(user);
       update.call(user);

@@ -1,9 +1,23 @@
-<header class="constrained main-header">
-    <section class="half-width">
-        <div class="logo left">
-            SIMPLE, AVAILABLE, DISTRIBUTED CLOUD STORAGE.
-        </div>
+<header class="constrained main-header logged-in">
+    <section class="less-than-half">
+        <div class="logo left">Simple, Available, Distributed Cloud Storage.</div>
         <div class="clear"></div>
+    </section>
+    <section class="more-than-half nav-blocks">
+        <nav>
+            <div class="block-container blue has-shadow right">
+                <a {{action viewUsers this href=true}} class="nav-block blue-radial" rel="nofollow">
+                    <span class="nav-icon account-large"></span>
+                    <span class="bottom-text">List</span>
+                </a>
+            </div>
+            <div class="block-container blue has-shadow right">
+                <a {{action createUser this href=true}} class="nav-block blue-radial" rel="nofollow">
+                    <span class="nav-icon account-large"></span>
+                    <span class="bottom-text">Create</span>
+                </a>
+            </div>
+        </nav>
     </section>
     <div class="clear"></div>
     <div class="block-container blue has-shadow">
@@ -20,7 +34,9 @@
     <div class="block-container blue has-shadow">
         <div class="footer-bar blue-linear">
             <section class="half-width">
-                <div class="left footer-info">Copyright &copy; 2012 Basho Technologies, Inc.</div>
+                <div class="left footer-info">
+                    Copyright &copy; 2012 Basho Technologies, Inc.
+                </div>
             </section>
             <section class="half-width">
                 <div class="right footer-info">
