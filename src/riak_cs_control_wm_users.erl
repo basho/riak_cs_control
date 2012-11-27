@@ -71,7 +71,8 @@ from_json(ReqData, Context) ->
         {true, NewContext} ->
             User = NewContext#context.user,
             Response = mochijson2:encode({struct, [{user, User}]}),
-            {Response, ReqData, NewContext};
+            NewReqData = wrq:set_resp_body(Response, ReqData),
+            {true, NewReqData, NewContext};
         {false, Context} ->
             {{halt, 409}, ReqData, Context}
     end.
