@@ -104,10 +104,12 @@ maybe_create_user(ReqData, Context) ->
 
 %% @doc Create user.
 create_user(Attributes) ->
+    {struct, [{<<"user">>, DecodedAttributes}]} = mochijson2:decode(Attributes),
+    EncodedAttributes = mochijson2:encode(DecodedAttributes),
     erlcloud_s3:put_object(
         riak_cs_control_helpers:administration_bucket_name(),
         "user",
-        Attributes,
+        EncodedAttributes,
         [{return_response, true}],
         [{"content-type", "application/json"}]).
 
