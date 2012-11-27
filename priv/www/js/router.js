@@ -4,7 +4,7 @@ minispade.register('router', function() {
     root: Ember.Route.extend({
       index: Ember.Route.extend({
         route: '/',
-        redirectsTo: 'users.create'
+        redirectsTo: 'users.index'
       }),
 
       viewUsers: Ember.Route.transitionTo('users.index'),
