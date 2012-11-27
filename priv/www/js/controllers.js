@@ -12,11 +12,17 @@ minispade.register('controllers', function() {
     createUser: function() {
       this.transaction.commit();
       this.transaction = null;
+
+      this.get('content').addObserver('id', this, 'showUsers');
     },
 
     exit: function() {
       this.transaction.rollback();
       this.transaction = null;
+    },
+
+    viewUsers: function() {
+      RiakCsControl.router.send('viewUsers');
     }
   });
 
