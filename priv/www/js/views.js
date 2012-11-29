@@ -4,6 +4,15 @@ minispade.register('views', function() {
     templateName: 'application'
   });
 
+  RiakCsControl.CreateUserView = Ember.View.extend({
+    templateName: 'create_user',
+
+    submit: function(ev) {
+      ev.preventDefault();
+      this.get('controller').createUser();
+    }
+  });
+
   RiakCsControl.UsersView = Ember.View.extend({
     templateName: 'users'
   });

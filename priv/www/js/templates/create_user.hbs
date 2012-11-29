@@ -1,0 +1,26 @@
+    <section class="constrained info">
+        <div class="block-container white">
+            <h1 class="title">Create User</h1>
+
+            <div class="white-slab nudge-down">
+                <h2 class="title">User Details</h2>
+                <div class="light-gray-bg inner-padding">
+                    <form>
+                        <label for="name">Name</label>
+                        <div class="field-wrapper">
+                          {{view Ember.TextField valueBinding="content.name" id="name" placeholder="Name" classNames="field"}}
+                        </div>
+                        <label for="email">E-mail Address</label>
+                        <div class="field-wrapper">
+                          {{view Ember.TextField valueBinding="content.email" id="email" placeholder="E-mail Address" classNames="field"}}
+                        </div>
+                        <div class="block-container green has-light-shadow left">
+                            <a href="#" class="small-button green-linear" {{action "submit" this target="view"}}>
+                                <span class="tiny-icon plus-tiny"></span>Create</a>
+                        </div>
+                        <div class="clear"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
