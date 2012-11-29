@@ -23,16 +23,18 @@ minispade.register('controllers', function() {
       this.transaction = null;
     },
 
-    viewUsers: function() {
+    viewUsers: function(user) {
+      // HACK: Massive hack because the record array won't refresh when
+      // the transaction is committed.  Force the record to load by
+      // accessing it by id.
+      //
+      RiakCsControl.User.find(user.get('id'));
+
       RiakCsControl.router.send('viewUsers');
     }
   });
 
   RiakCsControl.UsersController = Ember.ArrayController.extend({
-    persistedUsers: function() {
-      return this.get('content').filterProperty('isNew', false);
-    }.property('content.@each.isNew'),
-
     enableUser: function(user) {
       this.performUserUpdate(user, function() { user.enable(); });
     },
