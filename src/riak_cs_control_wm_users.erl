@@ -24,7 +24,8 @@
          post_is_create/2,
          create_path/2,
          from_json/2,
-         to_json/2]).
+         to_json/2,
+         routes/0]).
 
 -include_lib("webmachine/include/webmachine.hrl").
 
@@ -33,6 +34,9 @@
 init([]) ->
     riak_cs_control_helpers:configure_s3_connection(),
     {ok, #context{users=undefined,user=undefined}}.
+
+routes() ->
+    [{["users"], ?MODULE, []}].
 
 allowed_methods(ReqData, Context) ->
     {['HEAD', 'GET', 'POST'], ReqData, Context}.
@@ -92,7 +96,8 @@ maybe_create_user(ReqData, Context) ->
         undefined ->
             try
                 Attributes = wrq:req_body(ReqData),
-                {_Headers, Body} = create_user(Attributes),
+                NewAttributes = riak_cs_control_helpers:reencode_attributes(Attributes),
+                {_Headers, Body} = riak_cs_control_session:put_user(NewAttributes),
                 ParsedResponse = mochijson2:decode(Body),
                 {true, Context#context{user=ParsedResponse}}
             catch
@@ -103,31 +108,13 @@ maybe_create_user(ReqData, Context) ->
             {true, Context}
     end.
 
-%% @doc Create user.
-create_user(Attributes) ->
-    {struct, [{<<"user">>, DecodedAttributes}]} = mochijson2:decode(Attributes),
-    EncodedAttributes = mochijson2:encode(DecodedAttributes),
-    erlcloud_s3:put_object(
-        riak_cs_control_helpers:administration_bucket_name(),
-        "user",
-        EncodedAttributes,
-        [{return_response, true}],
-        [{"content-type", "application/json"}]).
-
-%% @doc Retrieve users list.
-retrieve_users() ->
-    erlcloud_s3:get_object(
-        riak_cs_control_helpers:administration_bucket_name(),
-        "users",
-        [{accept, "application/json"}]).
-
 %% @doc Attempt to retrieve the user or return an exception if it doesn't
 %% exist.
 maybe_retrieve_users(Context) ->
     case Context#context.users of
         undefined ->
             try
-                Response = retrieve_users(),
+                Response = riak_cs_control_session:get_users(),
                 ParsedResponse = parse_multipart_response(Response),
                 {true, Context#context{users=ParsedResponse}}
             catch
