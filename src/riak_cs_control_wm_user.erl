@@ -22,15 +22,18 @@
          content_types_accepted/2,
          resource_exists/2,
          from_json/2,
-         to_json/2]).
+         to_json/2,
+         routes/0]).
 
 -include_lib("webmachine/include/webmachine.hrl").
 
 -record(context, {user=undefined}).
 
 init([]) ->
-    riak_cs_control_helpers:configure_s3_connection(),
     {ok, #context{user=undefined}}.
+
+routes() ->
+    [{["users", key_id], ?MODULE, []}].
 
 allowed_methods(ReqData, Context) ->
     {['HEAD', 'GET', 'PUT'], ReqData, Context}.
@@ -61,7 +64,7 @@ maybe_retrieve_user(Context, KeyId) ->
     case Context#context.user of
         undefined ->
             try
-                Response = retrieve_user(KeyId),
+                {ok, Response} = riak_cs_control_session:get_user(KeyId),
                 RawUser = proplists:get_value(content, Response),
                 {struct, User} = mochijson2:decode(RawUser),
                 {true, Context#context{user=User}}
@@ -73,24 +76,6 @@ maybe_retrieve_user(Context, KeyId) ->
             {true, Context}
     end.
 
-%% @doc Retrieve user object.
-retrieve_user(KeyId) ->
-    erlcloud_s3:get_object(
-        riak_cs_control_helpers:administration_bucket_name(),
-        "user/" ++ KeyId,
-        [{accept, "application/json"}]).
-
-%% @doc Store user object.
-store_user(KeyId, Attributes) ->
-    {struct, [{<<"user">>, DecodedAttributes}]} = mochijson2:decode(Attributes),
-    EncodedAttributes = mochijson2:encode(DecodedAttributes),
-    erlcloud_s3:put_object(
-        riak_cs_control_helpers:administration_bucket_name(),
-        "user/" ++ KeyId,
-        EncodedAttributes,
-        [{return_response, true}],
-        [{"content-type", "application/json"}]).
-
 %% @doc Handle updates on a per user basis.
 from_json(ReqData, Context) ->
     KeyId = key_id(ReqData),
@@ -98,7 +83,8 @@ from_json(ReqData, Context) ->
         {true, NewContext} ->
             try
                 Attributes = wrq:req_body(ReqData),
-                {_Headers, _Body} = store_user(KeyId, Attributes),
+                NewAttributes = riak_cs_control_helpers:reencode_attributes(Attributes),
+                {ok, _Response} = riak_cs_control_session:put_user(KeyId, NewAttributes),
                 Resource = "/users/" ++ KeyId,
                 NewReqData = wrq:set_resp_header("Location", Resource, ReqData),
                 {{halt, 204}, NewReqData, NewContext}
