@@ -14,7 +14,12 @@
 
 -export([configure_s3_connection/0,
          administration_bucket_name/0,
+         reencode_attributes/1,
          iso8601/1]).
+
+reencode_attributes(Attributes) ->
+    {struct, [{<<"user">>, DecodedAttributes}]} = mochijson2:decode(Attributes),
+    mochijson2:encode(DecodedAttributes).
 
 configure_s3_connection() ->
     RiakCsHostname = s3_configuration(riak_cs_hostname),
