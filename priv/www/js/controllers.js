@@ -24,9 +24,15 @@ minispade.register('controllers', function() {
     },
 
     viewUsers: function(user) {
-      // HACK: Massive hack because the record array won't refresh when
-      // the transaction is committed.  Force the record to load by
-      // accessing it by id.
+      //
+      // HACK:
+      //
+      // We have two options here to get this change to propagate
+      // through the application, 1. set all observers of users to watch
+      // this create form for submitted transactions or use reverse
+      // callbacks, or 2. manually trigger the user to load which will
+      // propogate to anything that has a recordarray observing the user
+      // identity map.  I've chosen the latter for now.
       //
       RiakCsControl.User.find(user.get('id'));
 
