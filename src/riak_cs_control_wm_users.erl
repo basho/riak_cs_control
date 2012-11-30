@@ -36,7 +36,7 @@ init([]) ->
     {ok, #context{users=undefined,user=undefined}}.
 
 routes() ->
-    [{["users"], ?MODULE, []}].
+    [{["admin", "users"], ?MODULE, []}].
 
 allowed_methods(ReqData, Context) ->
     {['HEAD', 'GET', 'POST'], ReqData, Context}.
