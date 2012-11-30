@@ -1,14 +1,15 @@
 <section class="constrained info">
     <div class="block-container white">
-        <h1 class="title">User List</h1>
+        <h2 class="title">User List</h2>
 
         <div class="white-slab">
             <div class="tab-container right">
                 <a {{action "viewUsers" this href=true}} class="active-tab">All</a>
                 <div class="hide-shadow clear"></div>
             </div>
-            <div>
+            <div class="user-list-table">
                 <table class="info-table">
+                    <!--
                     <thead>
                         <tr>
                             <th><h2 class="title">Name</h2></th>
@@ -19,6 +20,7 @@
                             <th><h2 class="title">&nbsp;</h2></th>
                         </tr>
                     </thead>
+                    -->
                     {{collection RiakCsControl.UsersCollectionView contentBinding="controller.persistedUsers" itemClass="standard-row"}}
                 </table>
             </div>
