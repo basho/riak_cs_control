@@ -30,7 +30,6 @@
 -record(context, {user=undefined}).
 
 init([]) ->
-    riak_cs_control_helpers:configure_s3_connection(),
     {ok, #context{user=undefined}}.
 
 routes() ->

@@ -57,6 +57,7 @@ put_user(KeyId, Attributes) ->
 %%%===================================================================
 
 init([]) ->
+    riak_cs_control_helpers:configure_s3_connection(),
     {ok, #state{}}.
 
 handle_call(get_users, _From, State) ->
