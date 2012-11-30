@@ -1,12 +1,46 @@
 /* IMPORT FONTS */
 @font-face {
-    font-family: 'rokkitt';
-    src: url(../fonts/rokkitt.eot?) format('eot'), url(../fonts/rokkitt.woff) format('woff'), url(../fonts/rokkitt.ttf) format('truetype');
+    font-family: 'noticia';
+    src: url(../fonts/noticiatext-italic-webfont-eot.eot);
+    src: url(../fonts/noticiatext-italic-webfont-eot.eot?#iefix) format('embedded-opentype'),
+         url(../fonts/noticiatext-italic-webfont-woff.woff) format('woff'),
+         url(../fonts/noticiatext-italic-webfont-ttf.ttf) format('truetype'),
+         url(../fonts/noticiatext-italic-webfont-svg.svg#noticia_textitalic) format('svg');
+    font-weight: normal;
+    font-style: italic;
+
 }
 @font-face {
-    font-family: 'rokkitt';
-    src: url(..fonts/rokkitt-bold.eot?) format('eot'), url(../fonts/rokkitt-bold.woff) format('woff'), url(../fonts/rokkitt-bold.ttf) format('truetype');
+    font-family: 'noticia';
+    src: url(../fonts/noticiatext-regular-webfont-eot.eot);
+    src: url(../fonts/noticiatext-regular-webfont-eot.eot?#iefix) format('embedded-opentype'),
+         url(../fonts/noticiatext-regular-webfont-woff.woff) format('woff'),
+         url(../fonts/noticiatext-regular-webfont-ttf.ttf) format('truetype'),
+         url(../fonts/noticiatext-regular-webfont-svg.svg#noticia_textregular) format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+@font-face {
+    font-family: 'titillium';
+    src: url(../fonts/titilliumtext25l001-webfont-eot.eot);
+    src: url(../fonts/titilliumtext25l001-webfont-eot.eot?#iefix) format('embedded-opentype'),
+         url(../fonts/titilliumtext25l001-webfont-woff.woff) format('woff'),
+         url(../fonts/titilliumtext25l001-webfont-ttf.ttf) format('truetype'),
+         url(../fonts/titilliumtext25l001-webfont-svg.svg#titilliumtext25l600_wt) format('svg');
     font-weight: bold;
+    font-style: normal;
+
+}
+@font-face {
+    font-family: 'titillium';
+    src: url(../fonts/titilliumtext25l004-webfont-eot.eot);
+    src: url(../fonts/titilliumtext25l004-webfont-eot.eot?#iefix) format('embedded-opentype'),
+         url(../fonts/titilliumtext25l004-webfont-woff.woff) format('woff'),
+         url(../fonts/titilliumtext25l004-webfont-ttf.ttf) format('truetype'),
+         url(../fonts/titilliumtext25l004-webfont-svg.svg#titilliumtext25l1_wt) format('svg');
+    font-weight: normal;
+    font-style: normal;
 }
 
 /* RESET PORTION */
@@ -84,17 +118,19 @@ table {
 }
 
 .title {
-    font-family: 'rokkitt', serif;
+    font-family: 'titillium', helvetica, serif;
     color: #fff;
     text-shadow: 0 1px 1px #000;
 }
 
-.italic {
-    font-style: italic;
+.black-title {
+    font-weight: bold;
+    color: #2a2a2a;
+    padding-right: 10px;
 }
 
-.bold {
-    font-weight: bold;
+.italic {
+    font-style: italic;
 }
 
 .splat {
@@ -193,6 +229,14 @@ table {
 
 .tools-large {
     background: url(../images/large-icon-sprite.png) left -175px no-repeat transparent;
+}
+
+.create-large {
+    background: url(../images/large-icon-sprite.png) 3px -142px no-repeat transparent;
+}
+
+.list-large {
+    background: url(../images/large-icon-sprite.png) left -177px no-repeat transparent;
 }
 
 .users-small {
@@ -317,6 +361,7 @@ table {
     position: absolute;
     bottom: 8px;
     left: 10px;
+    font-size: 15px;
 }
 
 .nav-icon {
@@ -562,10 +607,36 @@ table {
 
 .button-cell {
     text-align: center;
-    border-left: 3px solid #fff;
-    width: 92px;
+    min-width: 92px;
     position: relative;
     text-transform: uppercase;
+    padding: 12px 0 12px 15px;
+}
+
+.row-button-usertable {
+    cursor: pointer;
+    display: block;
+    color: #888;
+    padding: 1px 0 0 5px;
+    margin-left: 2px;
+    font-weight: bold;
+}
+.row-button-usertable:hover {
+    color: #1f1f1f;
+}
+
+.enable-disable .row-button-usertable {
+    background: url(../images/row-edit-sprite.png) left -270px no-repeat transparent;
+}
+.enable-disable .row-button-usertable:hover {
+    background-position: left -316px;
+}
+
+.revoke .row-button-usertable {
+    background: url(../images/row-edit-sprite.png) left -180px no-repeat transparent;
+}
+.revoke .row-button-usertable:hover {
+    background-position: left -225px;
 }
 
 .row-button-reset {
@@ -588,6 +659,7 @@ table {
     color: #888;
     padding: 1px 0 0 15px;
     margin-left: 2px;
+    font-weight: bold;
 }
 .row-button-edit:hover {
     background-position: left -46px;
@@ -713,6 +785,7 @@ table {
 .expander-section {
     text-align: left;
 }
+
 
 
 .orange-radial {
@@ -852,6 +925,23 @@ a.red-linear:hover {
     background-image: -o-linear-gradient(top, #f37e7e, #ae4343);
 }
 
+
+.green-radial {
+    border: 1px solid #68b633;
+    background-color: #5ca12d;
+    background-image: -webkit-radial-gradient(center, #70c637, #599b2c);
+    background-image: -moz-radial-gradient(center, #70c637, #599b2c);
+    background-image: -ms-radial-gradient(center, #70c637, #599b2c);
+    background-image: -o-radial-gradient(center, #70c637, #599b2c);
+}
+a.green-radial:hover {
+    border: 1px solid #68b633;
+    background-color: #5ca12d;
+    background-image: -webkit-radial-gradient(bottom, #92e859, #6aac3d);
+    background-image: -moz-radial-gradient(bottom, #92e859, #6aac3d);
+    background-image: -ms-radial-gradient(bottom, #92e859, #6aac3d);
+    background-image: -o-radial-gradient(bottom, #92e859, #6aac3d);
+}
 .green-linear {
     border: 1px solid #68b633;
     background-color: #5ca12d;
@@ -919,28 +1009,30 @@ a.purple-linear:hover {
 
 html, body {
     background: url(../images/body-bg.gif) left top repeat #282828;
-    font-family: arial, helvetica, sans-serif;
+    font-family: 'titillium', helvetica, sans-serif;
     color: #fff;
     font-size: 14px;
     line-height: 1.3;
 }
 
 h1 {
-    font-size: 33px;
+    font-size: 30px;
     padding: 2px 0;
     font-weight: normal;
     overflow: visible;
 }
 
 h2 {
-    font-size: 24px;
-    font-weight: normal;
+    font-size: 26px;
+    font-weight: bold;
+    letter-spacing: 1px;
     padding: 10px 0 0 0;
 }
 
 h3 {
     font-size: 22px;
     font-weight: normal;
+    margin-bottom: 7px;
 }
 
 label {
@@ -1101,12 +1193,60 @@ nav .block-container:active {
   box-shadow: 0 2px 3px #191919;
 }
 
+/*
 tr.standard-row:nth-child(even) {
     background: #ccc;
 }
 
 tr.standard-row:nth-child(odd) {
     background: #eaeaea;
+}
+*/
+
+.table-ribbon-blue {
+    background: url(../images/blue-ribbon.png) left top no-repeat transparent;
+}
+
+.table-ribbon-red {
+    background: url(../images/red-ribbon.png) left top no-repeat transparent;
+}
+
+.table-ribbon-blue, .table-ribbon-red {
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-shadow: 0 1px 1px #000;
+    width: 87px;
+    margin-left: -29px;
+    vertical-align: middle;
+    padding: 14px 0 14px 18px;
+}
+
+
+tr.standard-row {
+    background: #eaeaea;
+}
+
+tr.standard-row.disabled {
+    background: #ccc;
+}
+
+.user-list-table {
+    padding-top: 13px;
+}
+
+.info-table td {
+    vertical-align: middle;
+    padding: 9px;
+    border-bottom: 25px solid #fff;
+}
+
+.info-table tr:last-child td {
+    border-bottom: 0;
+}
+
+.info-table td.button-container {
+    padding: 0;
 }
 
 .info-table tbody tr.expander-row td {
@@ -1116,25 +1256,37 @@ tr.standard-row:nth-child(odd) {
 .info-table tbody tr.selected-row {
     background: #ffebd5;
 }
+
+/*
 .info-table tbody tr.selected-row:nth-child(even) {
     background: #ddc9b3;
 }
+*/
+
 .info-table tbody tr.selected-row .riak-item {
     border: 1px solid #ffc98c;
 }
+
+/*
 .info-table tbody tr.selected-row:nth-child(even) .riak-item {
     border: 1px solid #dda76a;
 }
+*/
+
 .info-table th {
     padding: 4px 10px;
     text-align: left;
 }
+
+/*
 .info-table tr:nth-child(odd) td {
     padding: 10px;
 }
 .info-table tr:nth-child(even) td {
     padding: 9px 10px;
 }
+*/
+
 .info-table tr.normal-row td {
     padding: 0 10px 15px;
 }
@@ -1186,6 +1338,18 @@ footer.constrained {
   text-decoration: underline;
   font-weight: bold;
   margin-left: 10px;
+}
+
+.white-border-left {
+    border-left: 3px solid #fff;
+}
+
+.white-border-bottom {
+    border-bottom: 3px solid #fff;
+}
+
+.bold {
+    font-weight: bold;
 }
 
 /* INITIAL SETUPS TO BE MANIPULATED BY JS */
