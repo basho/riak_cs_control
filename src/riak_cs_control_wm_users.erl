@@ -71,7 +71,8 @@ from_json(ReqData, Context) ->
         {true, NewContext} ->
             User = NewContext#context.user,
             Response = mochijson2:encode({struct, [{user, User}]}),
-            {Response, ReqData, NewContext};
+            NewReqData = wrq:set_resp_body(Response, ReqData),
+            {true, NewReqData, NewContext};
         {false, Context} ->
             {{halt, 409}, ReqData, Context}
     end.
@@ -104,10 +105,12 @@ maybe_create_user(ReqData, Context) ->
 
 %% @doc Create user.
 create_user(Attributes) ->
+    {struct, [{<<"user">>, DecodedAttributes}]} = mochijson2:decode(Attributes),
+    EncodedAttributes = mochijson2:encode(DecodedAttributes),
     erlcloud_s3:put_object(
         riak_cs_control_helpers:administration_bucket_name(),
         "user",
-        Attributes,
+        EncodedAttributes,
         [{return_response, true}],
         [{"content-type", "application/json"}]).
 
