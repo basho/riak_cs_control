@@ -43,7 +43,7 @@ minispade.register('views', function() {
   });
 
   RiakCsControl.ButtonView = Ember.View.extend({
-    tagName: 'td',
+    tagName: 'div',
     templateName: 'button',
     classNames: 'button-cell',
     click: function(ev) {
