@@ -42,8 +42,8 @@ relclean:
 ## Developer targets
 ##
 stage : rel
-	$(foreach dep,$(wildcard deps/*), rm -rf rel/riak_cs_control/lib/$(shell basename $(dep))-* && ln -sf $(abspath $(dep)) rel/riak_cs_control-cs/lib;)
-	$(foreach app,$(wildcard apps/*), rm -rf rel/riak_cs_control/lib/$(shell basename $(app))-* && ln -sf $(abspath $(app)) rel/riak_cs_control-cs/lib;)
+	$(foreach dep,$(wildcard deps/*), rm -rf rel/riak_cs_control/lib/$(shell basename $(dep))-* && ln -sf $(abspath $(dep)) rel/riak_cs_control/lib;)
+	$(foreach app,$(wildcard apps/*), rm -rf rel/riak_cs_control/lib/$(shell basename $(app))-* && ln -sf $(abspath $(app)) rel/riak_cs_control/lib;)
 
 ##
 ## Doc targets
