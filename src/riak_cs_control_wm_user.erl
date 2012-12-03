@@ -64,7 +64,7 @@ maybe_retrieve_user(Context, KeyId) ->
     case Context#context.user of
         undefined ->
             try
-                Response = riak_cs_control_session:get_user(KeyId),
+                {ok, Response} = riak_cs_control_session:get_user(KeyId),
                 RawUser = proplists:get_value(content, Response),
                 {struct, User} = mochijson2:decode(RawUser),
                 {true, Context#context{user=User}}
@@ -84,7 +84,7 @@ from_json(ReqData, Context) ->
             try
                 Attributes = wrq:req_body(ReqData),
                 NewAttributes = riak_cs_control_helpers:reencode_attributes(Attributes),
-                riak_cs_control_session:put_user(KeyId, NewAttributes),
+                {ok, _Response} = riak_cs_control_session:put_user(KeyId, NewAttributes),
                 Resource = "/users/" ++ KeyId,
                 NewReqData = wrq:set_resp_header("Location", Resource, ReqData),
                 {{halt, 204}, NewReqData, NewContext}
