@@ -35,15 +35,27 @@ init([]) ->
                           worker,
                           [riak_cs_control_session]},
 
-    case app_helper:get_env(riak_cs_control, enabled, false) of
-        true ->
-            Resources = [riak_cs_control_wm_asset,
-                         riak_cs_control_wm_user,
-                         riak_cs_control_wm_users],
-            Routes = lists:append([Module:routes() || Module <- Resources]),
-            [webmachine_route:add_route(R) || R <- Routes],
+    Ip = case os:getenv("WEBMACHINE_IP") of
+        false -> "0.0.0.0";
+        Any -> Any end,
 
-            {ok, { {one_for_one, 10, 10}, [RiakCsControlSession]}};
-        _ ->
-            {ok, { {one_for_one, 10, 10}, []}}
-    end.
+    Resources = [riak_cs_control_wm_asset,
+                 riak_cs_control_wm_user,
+                 riak_cs_control_wm_users],
+
+    Dispatch = lists:flatten([Module:routes() || Module <- Resources]),
+
+    WebConfig = [
+                 {name, http},
+                 {ip, Ip},
+                 {port, 8000},
+                 {log_dir, "priv/log"},
+                 {dispatch, Dispatch}],
+
+    Web = {http,
+           {webmachine_mochiweb, start, [WebConfig]},
+           permanent, 5000, worker, [mochiweb_socket_server]},
+
+    Processes = [Web, RiakCsControlSession],
+
+    {ok, {{one_for_one, 10, 10}, Processes}}.
