@@ -1,24 +1,41 @@
 {{#with view}}
-    <td>{{name}}</td>
-    <td>{{email}}</td>
+    <td>
+      {{#if content.isDisabled}}
+        <div class="table-ribbon-red">DISABLED</div>
+      {{else}}
+        <div class="table-ribbon-blue">ENABLED</div>
+      {{/if}}
+    </td>
+    
+    <td>
+      <h3>{{name}}</h3>
+      <span class="black-title">EMAIL ADDRESS:</span>{{email}}
+    </td>
 
-    <td><span class="display-item gray">{{keyId}}</span></td>
-    <td><span class="display-item gray">{{keySecret}}</span></td>
+    <td>
+      <span class="black-title">ACCESS KEY:</span><span class="display-item gray">{{keyId}}</span><br/>
+      <span class="black-title">SECRET KEY:</span><span class="display-item gray">{{keySecret}}</span>
+    </td>
 
-    {{#if content.isDisabled}}
+    <td class="button-container white-border-left">
+      {{#if content.isDisabled}}
+        {{view RiakCsControl.ButtonView
+                label="Enable"
+                contentBinding="content"
+                target="enableUser"
+                class="white-border-bottom enable-disable"}}
+      {{else}}
+        {{view RiakCsControl.ButtonView
+                label="Disable"
+                contentBinding="content"
+                target="disableUser"
+                class="white-border-bottom enable-disable"}}
+      {{/if}}
+
       {{view RiakCsControl.ButtonView
-              label="Enable"
+              label="Revoke"
               contentBinding="content"
-              target="enableUser"}}
-    {{else}}
-      {{view RiakCsControl.ButtonView
-              label="Disable"
-              contentBinding="content"
-              target="disableUser"}}
-    {{/if}}
-
-    {{view RiakCsControl.ButtonView
-            label="Revoke"
-            contentBinding="content"
-            target="revokeCredentials"}}
+              target="revokeCredentials"
+              class="revoke"}}
+    </td>
 {{/with}}
