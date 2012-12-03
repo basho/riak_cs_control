@@ -16,11 +16,16 @@
          allowed_methods/2,
          content_types_provided/2,
          resource_exists/2,
-         to_resource/2]).
+         to_resource/2,
+         routes/0]).
 
 -include_lib("webmachine/include/webmachine.hrl").
 
 init([]) -> {ok, undefined}.
+
+routes() ->
+    [{["admin", ""], ?MODULE, []},
+     {["admin", "*"], ?MODULE, []}].
 
 allowed_methods(ReqData, Context) ->
     {['HEAD', 'GET'], ReqData, Context}.

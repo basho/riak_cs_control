@@ -14,16 +14,21 @@
 
 -export([configure_s3_connection/0,
          administration_bucket_name/0,
+         reencode_attributes/1,
          iso8601/1]).
 
+reencode_attributes(Attributes) ->
+    {struct, [{<<"user">>, DecodedAttributes}]} = mochijson2:decode(Attributes),
+    mochijson2:encode(DecodedAttributes).
+
 configure_s3_connection() ->
-    RiakCsHostname = s3_configuration(riak_cs_hostname),
-    RiakCsPort = s3_configuration(riak_cs_port),
-    RiakCsProtocol = s3_configuration(riak_cs_protocol),
-    RiakCsAccessKeyId = s3_configuration(riak_cs_access_key_id),
-    RiakCsSecretAccessKey = s3_configuration(riak_cs_secret_access_key),
-    RiakCsProxyHost = s3_configuration(riak_cs_proxy_host, ""),
-    RiakCsProxyPort = s3_configuration(riak_cs_proxy_port, 0),
+    RiakCsHostname = s3_configuration(cs_hostname),
+    RiakCsPort = s3_configuration(cs_port),
+    RiakCsProtocol = s3_configuration(cs_protocol),
+    RiakCsAccessKeyId = s3_configuration(cs_access_key_id),
+    RiakCsSecretAccessKey = s3_configuration(cs_secret_access_key),
+    RiakCsProxyHost = s3_configuration(cs_proxy_host, ""),
+    RiakCsProxyPort = s3_configuration(cs_proxy_port, 0),
     erlcloud_s3:configure(RiakCsAccessKeyId,
                           RiakCsSecretAccessKey,
                           RiakCsHostname,
