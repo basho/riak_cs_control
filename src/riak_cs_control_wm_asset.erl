@@ -24,8 +24,7 @@
 init([]) -> {ok, undefined}.
 
 routes() ->
-    [{["admin", ""], ?MODULE, []},
-     {["admin", "*"], ?MODULE, []}].
+    [{[""], ?MODULE, []}, {['*'], ?MODULE, []}].
 
 allowed_methods(ReqData, Context) ->
     {['HEAD', 'GET'], ReqData, Context}.
