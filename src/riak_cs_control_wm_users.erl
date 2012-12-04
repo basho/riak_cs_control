@@ -95,7 +95,7 @@ maybe_create_user(ReqData, Context) ->
         undefined ->
             try
                 Attributes = wrq:req_body(ReqData),
-                NewAttributes = riak_cs_control_helpers:reencode_attributes(Attributes),
+                NewAttributes = riak_cs_control_helpers:strip_root_from_attributes(Attributes),
                 {ok, {_Headers, Body}} = riak_cs_control_session:put_user(NewAttributes),
                 ParsedResponse = mochijson2:decode(Body),
                 {true, Context#context{user=ParsedResponse}}

@@ -83,7 +83,7 @@ from_json(ReqData, Context) ->
         {true, NewContext} ->
             try
                 Attributes = wrq:req_body(ReqData),
-                NewAttributes = riak_cs_control_helpers:reencode_attributes(Attributes),
+                NewAttributes = riak_cs_control_helpers:strip_root_from_attributes(Attributes),
                 {ok, _Response} = riak_cs_control_session:put_user(KeyId, NewAttributes),
                 Resource = "/users/" ++ KeyId,
                 NewReqData = wrq:set_resp_header("Location", Resource, ReqData),

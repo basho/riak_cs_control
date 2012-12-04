@@ -14,11 +14,11 @@
 
 -export([configure_s3_connection/0,
          administration_bucket_name/0,
-         reencode_attributes/1,
+         strip_root_from_attributes/1,
          iso8601/1,
          admin_key/0]).
 
-reencode_attributes(Attributes) ->
+strip_root_from_attributes(Attributes) ->
     {struct, [{<<"user">>, DecodedAttributes}]} = mochijson2:decode(Attributes),
     mochijson2:encode(DecodedAttributes).
 
