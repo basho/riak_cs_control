@@ -39,6 +39,8 @@ init([]) ->
         false -> "0.0.0.0";
         Any -> Any end,
 
+    Port = riak_cs_control_helpers:cs_configuration(port),
+
     Resources = [riak_cs_control_wm_user,
                  riak_cs_control_wm_users,
                  riak_cs_control_wm_asset],
@@ -48,7 +50,7 @@ init([]) ->
     WebConfig = [
                  {name, http},
                  {ip, Ip},
-                 {port, 8000},
+                 {port, Port},
                  {log_dir, "priv/log"},
                  {dispatch, Dispatch}],
 
@@ -57,5 +59,7 @@ init([]) ->
            permanent, 5000, worker, [mochiweb_socket_server]},
 
     Processes = [Web, RiakCsControlSession],
+
+    lager:info("Application listening on port ~p", [Port]),
 
     {ok, {{one_for_one, 10, 10}, Processes}}.
