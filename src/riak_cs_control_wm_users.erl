@@ -93,14 +93,12 @@ resource_exists(ReqData, Context) ->
 maybe_create_user(ReqData, Context) ->
     case Context#context.user of
         undefined ->
-            try
-                Attributes = wrq:req_body(ReqData),
-                NewAttributes = riak_cs_control_helpers:strip_root_from_attributes(Attributes),
-                {ok, {_Headers, Body}} = riak_cs_control_session:put_user(NewAttributes),
-                ParsedResponse = mochijson2:decode(Body),
-                {true, Context#context{user=ParsedResponse}}
-            catch
-                error:_ ->
+            Attributes = wrq:req_body(ReqData),
+            NewAttributes = riak_cs_control_helpers:strip_root_node(Attributes),
+            case riak_cs_control_session:put_user(NewAttributes) of
+                {ok, Response} ->
+                    {true, Context#context{user=Response}};
+                _ ->
                     {false, Context}
             end;
         _User ->
@@ -112,47 +110,15 @@ maybe_create_user(ReqData, Context) ->
 maybe_retrieve_users(Context) ->
     case Context#context.users of
         undefined ->
-            try
-                {ok, Response} = riak_cs_control_session:get_users(),
-                ParsedResponse = parse_multipart_response(Response),
-                {true, Context#context{users=ParsedResponse}}
-            catch
-                error:_ ->
+            case riak_cs_control_session:get_users() of
+                {ok, Response} ->
+                    {true, Context#context{users=Response}};
+                _ ->
                     {false, Context}
             end;
         _Users ->
             {true, Context}
     end.
-
-%% @doc Strip leading carriage return and line feed so it's valid
-%% multipart/mixed (this is the body seperator which erlcloud is not
-%% properly handling).
-reformat_multipart(Content) ->
-    list_to_binary(string:substr(binary_to_list(Content), 3)).
-
-%% @doc Extract boundary from multipart header.
-extract_boundary(ContentType) ->
-    string:substr(ContentType, string:str(ContentType, "boundary=") +
-                  length("boundary=")).
-
-%% @doc Given a series of multipart documents, extract just body out and
-%% parse based on content type.
-parse_bodies(Parts) ->
-    [mochijson2:decode(Body) || {_Name, {_Params, _Headers}, Body} <- Parts].
-
-%% @doc Given a series of parsed JSON documents, merge.
-merge_bodies(Bodies) ->
-    lists:flatten(Bodies).
-
-%% @doc Parse multipart user response.
-parse_multipart_response(Response) ->
-    Content = proplists:get_value(content, Response),
-    ContentType = proplists:get_value(content_type, Response),
-    ModifiedContent = reformat_multipart(Content),
-    Boundary = extract_boundary(ContentType),
-    Parts = webmachine_multipart:get_all_parts(ModifiedContent, Boundary),
-    Bodies = parse_bodies(Parts),
-    merge_bodies(Bodies).
 
 %% @doc Return serialized users.
 to_json(ReqData, Context) ->

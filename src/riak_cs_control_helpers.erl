@@ -14,11 +14,12 @@
 
 -export([configure_s3_connection/0,
          administration_bucket_name/0,
-         strip_root_from_attributes/1,
+         strip_root_node/1,
          iso8601/1,
          cs_configuration/1]).
 
-strip_root_from_attributes(Attributes) ->
+%% @doc Remove root node from user structure.
+strip_root_node(Attributes) ->
     {struct, [{<<"user">>, DecodedAttributes}]} = mochijson2:decode(Attributes),
     mochijson2:encode(DecodedAttributes).
 

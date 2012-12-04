@@ -63,13 +63,10 @@ resource_exists(ReqData, Context) ->
 maybe_retrieve_user(Context, KeyId) ->
     case Context#context.user of
         undefined ->
-            try
-                {ok, Response} = riak_cs_control_session:get_user(KeyId),
-                RawUser = proplists:get_value(content, Response),
-                {struct, User} = mochijson2:decode(RawUser),
-                {true, Context#context{user=User}}
-            catch
-                error:_ ->
+            case riak_cs_control_session:get_user(KeyId) of
+                {ok, Response} ->
+                    {true, Context#context{user=Response}};
+                _ ->
                     {false, Context}
             end;
         _User ->
@@ -81,15 +78,14 @@ from_json(ReqData, Context) ->
     KeyId = key_id(ReqData),
     case maybe_retrieve_user(Context, KeyId) of
         {true, NewContext} ->
-            try
-                Attributes = wrq:req_body(ReqData),
-                NewAttributes = riak_cs_control_helpers:strip_root_from_attributes(Attributes),
-                {ok, _Response} = riak_cs_control_session:put_user(KeyId, NewAttributes),
-                Resource = "/users/" ++ KeyId,
-                NewReqData = wrq:set_resp_header("Location", Resource, ReqData),
-                {{halt, 204}, NewReqData, NewContext}
-            catch
-                error:_ ->
+            Attributes = wrq:req_body(ReqData),
+            NewAttributes = riak_cs_control_helpers:strip_root_node(Attributes),
+            case riak_cs_control_session:put_user(KeyId, NewAttributes) of
+                {ok, _Response} ->
+                    Resource = "/users/" ++ KeyId,
+                    NewReqData = wrq:set_resp_header("Location", Resource, ReqData),
+                    {{halt, 204}, NewReqData, NewContext};
+                _ ->
                     {{halt, 500}, ReqData, Context}
             end;
         {false, Context} ->
@@ -101,7 +97,7 @@ to_json(ReqData, Context) ->
     case maybe_retrieve_user(Context, key_id(ReqData)) of
         {true, NewContext} ->
             User = NewContext#context.user,
-            Response = mochijson2:encode({struct, [{user, {struct, User}}]}),
+            Response = mochijson2:encode({struct, [{user, User}]}),
             {Response, ReqData, NewContext};
         {false, Context} ->
             Response = mochijson2:encode({struct, []}),
