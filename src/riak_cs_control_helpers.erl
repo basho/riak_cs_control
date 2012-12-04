@@ -15,7 +15,8 @@
 -export([configure_s3_connection/0,
          administration_bucket_name/0,
          reencode_attributes/1,
-         iso8601/1]).
+         iso8601/1,
+         admin_key/0]).
 
 reencode_attributes(Attributes) ->
     {struct, [{<<"user">>, DecodedAttributes}]} = mochijson2:decode(Attributes),
@@ -36,6 +37,9 @@ configure_s3_connection() ->
                           RiakCsProtocol,
                           RiakCsProxyHost,
                           RiakCsProxyPort).
+
+admin_key() ->
+    s3_configuration(cs_admin_key).
 
 administration_bucket_name() ->
     s3_configuration(cs_administration_bucket).
