@@ -38,7 +38,7 @@ configure_s3_connection() ->
                           RiakCsProxyPort).
 
 administration_bucket_name() ->
-    s3_configuration(riak_cs_administration_bucket).
+    s3_configuration(cs_administration_bucket).
 
 s3_configuration(Attribute) ->
     {ok, Value} = application:get_env(riak_cs_control, Attribute),
