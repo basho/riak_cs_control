@@ -1,17 +1,22 @@
 <section class="constrained info">
-    <div class="block-container white">
-        <h2 class="title">User List</h2>
+    
+    {{#if view.isLoading}}
+        {{view RiakCsControl.LoadingView id="loading"}}
+    {{else}}
+        <div class="block-container white">
+            <h2 class="title">User List</h2>
 
-        <div class="white-slab">
-            <div class="tab-container right">
-                <a {{action "viewUsers" this href=true}} class="active-tab">All</a>
-                <div class="hide-shadow clear"></div>
-            </div>
-            <div class="user-list-table">
-                <table class="info-table">
-                    {{collection RiakCsControl.UsersCollectionView contentBinding="controller" itemClass="standard-row"}}
-                </table>
+            <div class="white-slab">
+                <div class="tab-container right">
+                    <a {{action "viewUsers" this href=true}} class="active-tab">All</a>
+                    <div class="hide-shadow clear"></div>
+                </div>
+                <div class="user-list-table">
+                    <table class="info-table">
+                        {{collection RiakCsControl.UsersCollectionView contentBinding="controller" itemClass="standard-row"}}
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
+    {{/if}}
 </section>
