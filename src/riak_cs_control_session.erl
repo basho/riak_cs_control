@@ -57,24 +57,28 @@ put_user(KeyId, Attributes) ->
 %%%===================================================================
 
 init([]) ->
-    riak_cs_control_helpers:configure_s3_connection(),
+    riak_cs_control_configuration:configure_s3_connection(),
     {ok, #state{}}.
 
 handle_call(get_users, _From, State) ->
     Response = handle_request({multipart_get, "users"}),
-    {reply, {ok, Response}, State};
+    Users = riak_cs_control_formatting:format_users(Response),
+    {reply, {ok, Users}, State};
 
 handle_call({get_user, KeyId}, _From, State) ->
     Response = handle_request({get, "user/" ++ KeyId}),
-    {reply, {ok, Response}, State};
+    User = riak_cs_control_formatting:format_user(Response),
+    {reply, {ok, User}, State};
 
 handle_call({put_user, Attributes}, _From, State) ->
     Response = handle_request({put, "user", Attributes}),
-    {reply, {ok, Response}, State};
+    User = riak_cs_control_formatting:format_user(Response),
+    {reply, {ok, User}, State};
 
 handle_call({put_user, KeyId, Attributes}, _From, State) ->
     Response = handle_request({put, "user/" ++ KeyId, Attributes}),
-    {reply, {ok, Response}, State};
+    User = riak_cs_control_formatting:format_user(Response),
+    {reply, {ok, User}, State};
 
 handle_call(_Request, _From, State) ->
     {reply, ok, State}.
@@ -95,11 +99,12 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 
+%% @spec put_request(list(), list()) -> {ok, list()} | {error, list()}
 %% @doc Perform a put request to Riak CS.
 put_request(Url, Body) ->
     try
         Response = erlcloud_s3:put_object(
-            riak_cs_control_helpers:administration_bucket_name(),
+            riak_cs_control_configuration:administration_bucket_name(),
             Url,
             Body,
             [{return_response, true}],
@@ -109,11 +114,12 @@ put_request(Url, Body) ->
         error:Reason -> {error, Reason}
     end.
 
+%% @spec get_request(list()) -> {ok, list()} | {error, list()}
 %% @doc Perform a get request to Riak CS.
 get_request(Url) ->
     try
         Response = erlcloud_s3:get_object(
-            riak_cs_control_helpers:administration_bucket_name(),
+            riak_cs_control_configuration:administration_bucket_name(),
             Url,
             [{accept, "application/json"}]),
         {ok, Response}
@@ -121,49 +127,22 @@ get_request(Url) ->
         error:Reason -> {error, Reason}
     end.
 
-%% @doc Strip leading carriage return and line feed so it's valid
-%% multipart/mixed (this is the body seperator which erlcloud is not
-%% properly handling).
-reformat_multipart(Content) ->
-    list_to_binary(string:substr(binary_to_list(Content), 3)).
-
-%% @doc Extract boundary from multipart header.
-extract_boundary(ContentType) ->
-    string:substr(ContentType, string:str(ContentType, "boundary=") +
-                  length("boundary=")).
-
-%% @doc Given a series of multipart documents, extract just body out and
-%% parse based on content type.
-parse_bodies(Parts) ->
-    [mochijson2:decode(Body) || {_Name, {_Params, _Headers}, Body} <- Parts].
-
-%% @doc Given a series of parsed JSON documents, merge.
-merge_bodies(Bodies) ->
-    lists:flatten(Bodies).
-
-%% @doc Parse multipart user response.
-parse_multipart_response(Response) ->
-    Content = proplists:get_value(content, Response),
-    ContentType = proplists:get_value(content_type, Response),
-    ModifiedContent = reformat_multipart(Content),
-    Boundary = extract_boundary(ContentType),
-    Parts = webmachine_multipart:get_all_parts(ModifiedContent, Boundary),
-    Bodies = parse_bodies(Parts),
-    merge_bodies(Bodies).
-
+%% @spec empty_response() -> {struct, list()}
 %% @doc Empty decoded JSON placeholder.
 empty_response() -> {struct, []}.
 
-%% @doc Handle multipart get.
+%% @spec handle_request({multipart_get, list()}) -> list()
+%% @doc Handle multipart get request.
 handle_request({multipart_get, Url}) ->
     case get_request(Url) of
         {ok, Content} ->
-            parse_multipart_response(Content);
+            riak_cs_control_multipart:parse_multipart_response(Content);
         _ ->
             []
     end;
 
-%% @doc Handle get.
+%% @spec handle_request({get, list()}) -> {struct, list()}
+%% @doc Handle get request.
 handle_request({get, Url}) ->
     case get_request(Url) of
         {ok, Content} ->
@@ -173,11 +152,12 @@ handle_request({get, Url}) ->
             empty_response()
     end;
 
-%% @doc Handle put.
+%% @spec handle_request({put, list(), list()}) -> {struct, list()}
+%% @doc Handle put request.
 handle_request({put, Url, Body}) ->
     case put_request(Url, Body) of
-        {ok, {_Headers, Body}} ->
-            mochijson2:decode(Body);
+        {ok, {_ResponseHeaders, ResponseBody}} ->
+            mochijson2:decode(ResponseBody);
         _ ->
             empty_response()
     end.

@@ -41,6 +41,8 @@ minispade.register('controllers', function() {
   });
 
   RiakCsControl.UsersController = Ember.ArrayController.extend({
+    sortProperties: ['isNormal', 'email'],
+
     enableUser: function(user) {
       this.performUserUpdate(user, function() { user.enable(); });
     },
