@@ -1231,6 +1231,20 @@ tr.standard-row.disabled {
     background: #ccc;
 }
 
+tr.standard-row.admin .button-container .button-cell {
+    display: none;
+}
+
+tr.standard-row.admin .button-container.white-border-left {
+    border-left: 0;
+}
+
+tr.standard-row.admin .table-ribbon-blue {
+    background: url(../images/green-ribbon.png) left top no-repeat transparent;
+}
+
+
+
 .user-list-table {
     padding-top: 13px;
 }
