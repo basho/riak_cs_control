@@ -3,7 +3,11 @@
       {{#if content.isDisabled}}
         <div class="table-ribbon-red">DISABLED</div>
       {{else}}
-        <div class="table-ribbon-blue">ENABLED</div>
+        {{#if content.isAdmin}}
+          <div class="table-ribbon-green">ADMIN</div>
+        {{else}}
+          <div class="table-ribbon-blue">ENABLED</div>
+        {{/if}}
       {{/if}}
     </td>
     

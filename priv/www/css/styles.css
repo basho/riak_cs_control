@@ -1211,10 +1211,11 @@ tr.standard-row:nth-child(odd) {
     background: url(../images/red-ribbon.png) left top no-repeat transparent;
 }
 
-.table-ribbon-blue, .table-ribbon-red {
+.table-ribbon-blue, .table-ribbon-red, .table-ribbon-green {
     color: #fff;
     text-transform: uppercase;
     font-weight: bold;
+    font-style: normal;
     text-shadow: 0 1px 1px #000;
     width: 87px;
     margin-left: -29px;
@@ -1231,6 +1232,10 @@ tr.standard-row.disabled {
     background: #ccc;
 }
 
+tr.standard-row.admin {
+    background: #fce6ca;
+}
+
 tr.standard-row.admin .button-container .button-cell {
     display: none;
 }
@@ -1239,11 +1244,17 @@ tr.standard-row.admin .button-container.white-border-left {
     border-left: 0;
 }
 
-tr.standard-row.admin .table-ribbon-blue {
+.table-ribbon-green {
     background: url(../images/green-ribbon.png) left top no-repeat transparent;
 }
 
 
+#loading {
+    background: url(../images/loading.png) left top no-repeat transparent;
+    height: 285px;
+    width: 286px;
+    margin: 0 auto;
+}
 
 .user-list-table {
     padding-top: 13px;
