@@ -18,11 +18,17 @@ minispade.register('models', function() {
     display_name: DS.attr("string"),
     new_key_secret: DS.attr("boolean"),
 
+    admin: DS.attr("boolean"),
+
     status: DS.attr("string"),
 
     isDisabled: function() {
       return this.get('status') === 'disabled';
     }.property('status'),
+
+    isAdmin: function() {
+      return this.get('admin');
+    }.property('admin'),
 
     disable: function() {
       this.set('status', 'disabled');
