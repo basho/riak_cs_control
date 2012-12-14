@@ -83,7 +83,7 @@ minispade.register('views', function() {
       this.spinner.spin(this.$()[0]);
     },
 
-    "willDestroyElement": function () {
+    willDestroyElement: function () {
       this.spinner.stop();
     }
   });
