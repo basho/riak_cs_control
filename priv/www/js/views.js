@@ -81,6 +81,10 @@ minispade.register('views', function() {
           };
       this.set('spinner', new Spinner(spinnerOpts));
       this.spinner.spin(this.$()[0]);
+    },
+
+    "willDestroyElement": function () {
+      this.spinner.stop();
     }
   });
 
