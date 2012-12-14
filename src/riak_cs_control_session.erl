@@ -61,40 +61,19 @@ init([]) ->
     {ok, #state{}}.
 
 handle_call(get_users, _From, State) ->
-    Response = case get_request("users") of
-        {ok, Content} ->
-            parse_multipart_response(Content);
-        _ ->
-            []
-    end,
+    Response = handle_request({multipart_get, "users"}),
     {reply, {ok, Response}, State};
 
 handle_call({get_user, KeyId}, _From, State) ->
-    Response = case get_request("user/" ++ KeyId) of
-        {ok, Content} ->
-            User = proplists:get_value(content, Content),
-            mochijson2:decode(User);
-        _ ->
-            {struct, []}
-    end,
+    Response = handle_request({get, "user/" ++ KeyId}),
     {reply, {ok, Response}, State};
 
 handle_call({put_user, Attributes}, _From, State) ->
-    Response = case put_request("user", Attributes) of
-        {ok, {_Headers, Body}} ->
-            mochijson2:decode(Body);
-        _ ->
-            {struct, []}
-    end,
+    Response = handle_request({put, "user", Attributes}),
     {reply, {ok, Response}, State};
 
 handle_call({put_user, KeyId, Attributes}, _From, State) ->
-    Response = case put_request("user/" ++ KeyId, Attributes) of
-        {ok, {_Headers, Body}} ->
-            mochijson2:decode(Body);
-        _ ->
-            {struct, []}
-    end,
+    Response = handle_request({put, "user/" ++ KeyId, Attributes}),
     {reply, {ok, Response}, State};
 
 handle_call(_Request, _From, State) ->
@@ -171,3 +150,34 @@ parse_multipart_response(Response) ->
     Parts = webmachine_multipart:get_all_parts(ModifiedContent, Boundary),
     Bodies = parse_bodies(Parts),
     merge_bodies(Bodies).
+
+%% @doc Empty decoded JSON placeholder.
+empty_response() -> {struct, []}.
+
+%% @doc Handle multipart get.
+handle_request({multipart_get, Url}) ->
+    case get_request(Url) of
+        {ok, Content} ->
+            parse_multipart_response(Content);
+        _ ->
+            []
+    end;
+
+%% @doc Handle get.
+handle_request({get, Url}) ->
+    case get_request(Url) of
+        {ok, Content} ->
+            Body = proplists:get_value(content, Content),
+            mochijson2:decode(Body);
+        _ ->
+            empty_response()
+    end;
+
+%% @doc Handle put.
+handle_request({put, Url, Body}) ->
+    case put_request(Url, Body) of
+        {ok, {_Headers, Body}} ->
+            mochijson2:decode(Body);
+        _ ->
+            empty_response()
+    end.
