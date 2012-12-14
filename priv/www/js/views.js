@@ -26,9 +26,8 @@ minispade.register('views', function() {
     emailBinding: 'content.email',
     keyIdBinding: 'content.key_id',
 
-    isDisabled: function() {
-      return this.get('content.isDisabled');
-    }.property('content.status'),
+    isAdminBinding: 'content.isAdmin',
+    isDisabledBinding: 'content.isDisabled',
 
     keySecret: function() {
       var key_secret = this.get('content.key_secret');
