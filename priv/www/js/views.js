@@ -60,9 +60,7 @@ minispade.register('views', function() {
 
   RiakCsControl.LoadingView = Ember.View.extend({
     tagName: 'div',
-    didInsertElement: function () {
-      this.$().addClass('foo')
-    },
+
     didInsertElement: function () {
       var spinnerOpts = {
             lines:     13,        // The number of lines to draw
