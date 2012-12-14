@@ -105,6 +105,37 @@ table {
     padding: 0 100px;
 }
 
+.constrained.smaller {
+    min-width: auto;
+    max-width: 960px;
+    padding: 0 100px 25px;
+}
+
+.create-user-message {
+    background: url(../images/form-man.png) left 37px no-repeat transparent;
+    width: 520px;
+    height: 320px;
+    position: relative;
+}
+
+.create-user-message div {
+    position: absolute;
+    right: 0;
+    top: 37px;
+    width: 273px;
+    padding: 15px;
+    font-size: 15px;
+}
+
+.create-user-message div a {
+    color: #3ed5ff;
+    white-space: nowrap;
+}
+
+.create-user-message div a:hover {
+    color: #9feaff;
+}
+
 .has-shadow {
     -webkit-box-shadow: 0 4px 3px #1f1f1f;
     -moz-box-shadow: 0 4px 3px #1f1f1f;
@@ -299,6 +330,11 @@ table {
 
 .block-container {
     text-align: left;
+}
+
+.block-container.smaller {
+    width: 400px;
+    margin-right: 40px;
 }
 
 .block-container.orange {
@@ -1430,4 +1466,27 @@ rect {
 
 .capitalize {
   text-transform: capitalize;
+}
+
+@media screen and (max-width: 1176px) {
+    .create-user-message {
+        display: none;
+    }
+
+    .constrained {
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+
+    .constrained.smaller {
+        float: none;
+        margin: 25px auto 0;
+        min-width: auto;
+        max-width: auto;
+    }
+
+    .block-container.smaller {
+        margin: 0 auto;
+        float: none;
+    }
 }
