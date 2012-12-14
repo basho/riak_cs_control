@@ -14,7 +14,8 @@ minispade.register('views', function() {
   });
 
   RiakCsControl.UsersView = Ember.View.extend({
-    templateName: 'users'
+    templateName: 'users',
+    isLoadingBinding: 'controller.isLoading'
   });
 
   RiakCsControl.UserItemView = Ember.View.extend({
