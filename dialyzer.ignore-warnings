@@ -1,0 +1,4 @@
+riak_cs_control.erl:51: Expression produces a value of type 'ok' | {'error',_}, but this value is unmatched
+riak_cs_control.erl:52: Expression produces a value of type 'ok' | {'error',_}, but this value is unmatched
+riak_cs_control.erl:53: Expression produces a value of type 'ok' | {'error',_}, but this value is unmatched
+riak_cs_control.erl:54: Expression produces a value of type 'ok' | {'error',_}, but this value is unmatched
