@@ -39,7 +39,7 @@ init([]) ->
         false -> "0.0.0.0";
         Any -> Any end,
 
-    Port = riak_cs_control_helpers:cs_configuration(port),
+    Port = riak_cs_control_configuration:cs_configuration(port),
 
     Resources = [riak_cs_control_wm_user,
                  riak_cs_control_wm_users,

@@ -29,18 +29,23 @@
 
 -record(context, {user=undefined}).
 
+%% @doc Initialize the resource.
 init([]) ->
     {ok, #context{user=undefined}}.
 
+%% @doc Return the routes this module should respond to.
 routes() ->
     [{["users", key_id], ?MODULE, []}].
 
+%% @doc Support retrieval and updates for a user.
 allowed_methods(ReqData, Context) ->
     {['HEAD', 'GET', 'PUT'], ReqData, Context}.
 
+%% @doc Provide respones in JSON only.
 content_types_provided(ReqData, Context) ->
     {[{"application/json", to_json}], ReqData, Context}.
 
+%% @doc Accept user updates in JSON only.
 content_types_accepted(ReqData, Context) ->
     {[{"application/json", from_json}], ReqData, Context}.
 
@@ -58,8 +63,8 @@ resource_exists(ReqData, Context) ->
             {false, ReqData, Context}
     end.
 
-%% @doc Attempt to retrieve the user or return an exception if it doesn't
-%% exist. On all errors from riak-cs, return 404 for now.
+%% @doc Attempt to retrieve the user and store in the context if
+%% possible.
 maybe_retrieve_user(Context, KeyId) ->
     case Context#context.user of
         undefined ->
@@ -73,13 +78,14 @@ maybe_retrieve_user(Context, KeyId) ->
             {true, Context}
     end.
 
-%% @doc Handle updates on a per user basis.
+%% @doc Handle updating a particular user; return 404 on non-existent
+%% user, 500 on general error, and 204 on proper update.
 from_json(ReqData, Context) ->
     KeyId = key_id(ReqData),
     case maybe_retrieve_user(Context, KeyId) of
         {true, NewContext} ->
             Attributes = wrq:req_body(ReqData),
-            NewAttributes = riak_cs_control_helpers:strip_root_node(Attributes),
+            NewAttributes = riak_cs_control_formatting:strip_root_node(Attributes),
             case riak_cs_control_session:put_user(KeyId, NewAttributes) of
                 {ok, _Response} ->
                     Resource = "/users/" ++ KeyId,
