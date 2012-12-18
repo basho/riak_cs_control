@@ -7,7 +7,7 @@
 %% @author Christopher Meiklejohn <cmeiklejohn@basho.com>
 %% @copyright 2012 Basho Technologies, Inc.
 
-%% @doc Helpers for configuration and formatting of responses.
+%% @doc Helpers for formatting of responses.
 
 -module(riak_cs_control_formatting).
 -author('Christopher Meiklejohn <cmeiklejohn@basho.com>').
