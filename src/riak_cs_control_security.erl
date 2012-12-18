@@ -13,8 +13,7 @@
 -author('Christopher Meiklejohn <cmeiklejohn@basho.com>').
 
 -export([csrf_token/2,
-         is_valid_csrf_token/2,
-         is_null_origin/1]).
+         is_protected/2]).
 
 %% @doc Store a CSRF protection token in a cookie.
 csrf_token(ReqData, Context) ->
@@ -31,10 +30,20 @@ get_csrf_token(ReqData, _Context) ->
 
 %% @doc Ensure this request contains a valid csrf protection token.
 is_valid_csrf_token(ReqData, Context) ->
-    Body = mochiweb_util:parse_qs(wrq:req_body(ReqData)),
-    BodyToken = proplists:get_value("csrf_token", Body),
+    HeaderToken = wrq:get_req_header("X-CSRF-Token", ReqData),
     CookieToken = get_csrf_token(ReqData, Context),
-    BodyToken /= undefined andalso BodyToken == CookieToken.
+    HeaderToken /= undefined andalso HeaderToken == CookieToken.
+
+%% @doc Is this a protected method?
+is_protected_method(ReqData) ->
+    Method = wrq:method(ReqData),
+    Method == 'POST' orelse Method == 'PUT'.
+
+%% @doc Is this a protected?
+is_protected(ReqData, Context) ->
+    (is_null_origin(ReqData) or
+     not is_valid_csrf_token(ReqData, Context)) and
+    is_protected_method(ReqData).
 
 %% @doc Check if the Origin header is "null". This is useful to look for
 %% attempts at CSRF, but is not a complete answer to the problem.

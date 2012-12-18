@@ -17,6 +17,7 @@
 -endif.
 
 -export([init/1,
+         forbidden/2,
          allowed_methods/2,
          content_types_provided/2,
          content_types_accepted/2,
@@ -36,6 +37,10 @@ init([]) ->
 %% @doc Return the routes this module should respond to.
 routes() ->
     [{["users", key_id], ?MODULE, []}].
+
+%% @doc Validate CSRF token.
+forbidden(ReqData, Context) ->
+    {riak_cs_control_security:is_protected(ReqData, Context), ReqData, Context}.
 
 %% @doc Support retrieval and updates for a user.
 allowed_methods(ReqData, Context) ->
