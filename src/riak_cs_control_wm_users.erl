@@ -56,7 +56,7 @@ post_is_create(ReqData, Context) ->
 %% @doc Extract key out of response from riak-cs.
 extract_key_id(User) ->
     {struct, UserDetails} = User,
-    binary_to_list(proplists:get_value(list_to_binary("key_id"), UserDetails)).
+    binary_to_list(proplists:get_value(key_id, UserDetails)).
 
 %% @doc Attempt to create the user if possible, and generate the path
 %% using the key_id of the new user.
@@ -107,7 +107,7 @@ maybe_create_user(ReqData, Context) ->
     case Context#context.user of
         undefined ->
             Attributes = wrq:req_body(ReqData),
-            NewAttributes = riak_cs_control_formatting:strip_root_node(Attributes),
+            NewAttributes = riak_cs_control_formatting:format_incoming_user(Attributes),
             case riak_cs_control_session:put_user(NewAttributes) of
                 {ok, Response} ->
                     {true, Context#context{user=Response}};

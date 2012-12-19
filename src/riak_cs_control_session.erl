@@ -62,19 +62,23 @@ init([]) ->
 
 handle_call(get_users, _From, State) ->
     Response = handle_request({multipart_get, "users"}),
-    {reply, {ok, Response}, State};
+    Users = riak_cs_control_formatting:format_users(Response),
+    {reply, {ok, Users}, State};
 
 handle_call({get_user, KeyId}, _From, State) ->
     Response = handle_request({get, "user/" ++ KeyId}),
-    {reply, {ok, Response}, State};
+    User = riak_cs_control_formatting:format_user(Response),
+    {reply, {ok, User}, State};
 
 handle_call({put_user, Attributes}, _From, State) ->
     Response = handle_request({put, "user", Attributes}),
-    {reply, {ok, Response}, State};
+    User = riak_cs_control_formatting:format_user(Response),
+    {reply, {ok, User}, State};
 
 handle_call({put_user, KeyId, Attributes}, _From, State) ->
     Response = handle_request({put, "user/" ++ KeyId, Attributes}),
-    {reply, {ok, Response}, State};
+    User = riak_cs_control_formatting:format_user(Response),
+    {reply, {ok, User}, State};
 
 handle_call(_Request, _From, State) ->
     {reply, ok, State}.
@@ -133,8 +137,7 @@ handle_request({multipart_get, Url}) ->
     case get_request(Url) of
         {ok, Content} ->
             riak_cs_control_multipart:parse_multipart_response(Content);
-        {error, Reason} ->
-            lager:info("Multipart request failed: ~s", [Reason]),
+        _ ->
             []
     end;
 
@@ -145,8 +148,7 @@ handle_request({get, Url}) ->
         {ok, Content} ->
             Body = proplists:get_value(content, Content),
             mochijson2:decode(Body);
-        {error, Reason} ->
-            lager:info("Get request failed: ~s", [Reason]),
+        _ ->
             empty_response()
     end;
 
@@ -156,7 +158,6 @@ handle_request({put, Url, Body}) ->
     case put_request(Url, Body) of
         {ok, {_Headers, Body}} ->
             mochijson2:decode(Body);
-        {error, Reason} ->
-            lager:info("Put request failed: ~s", [Reason]),
+        _ ->
             empty_response()
     end.
