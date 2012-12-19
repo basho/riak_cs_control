@@ -133,7 +133,8 @@ handle_request({multipart_get, Url}) ->
     case get_request(Url) of
         {ok, Content} ->
             riak_cs_control_multipart:parse_multipart_response(Content);
-        _ ->
+        {error, Reason} ->
+            lager:info("Multipart request failed: ~s", [Reason]),
             []
     end;
 
@@ -144,7 +145,8 @@ handle_request({get, Url}) ->
         {ok, Content} ->
             Body = proplists:get_value(content, Content),
             mochijson2:decode(Body);
-        _ ->
+        {error, Reason} ->
+            lager:info("Get request failed: ~s", [Reason]),
             empty_response()
     end;
 
@@ -154,6 +156,7 @@ handle_request({put, Url, Body}) ->
     case put_request(Url, Body) of
         {ok, {_Headers, Body}} ->
             mochijson2:decode(Body);
-        _ ->
+        {error, Reason} ->
+            lager:info("Put request failed: ~s", [Reason]),
             empty_response()
     end.
