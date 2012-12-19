@@ -7,7 +7,7 @@ minispade.register('app', function() {
   $("body").bind("ajaxSend", function(elm, xhr, s){
     var csrf_token = $('meta[name=csrf_token]').attr('content');
 
-    if (s.type == "POST") {
+    if (s.type === 'POST' || s.type === 'PUT') {
         xhr.setRequestHeader('X-CSRF-Token', csrf_token);
     }
   });
