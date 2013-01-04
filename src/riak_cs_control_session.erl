@@ -99,8 +99,8 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 
-%% @spec put_request(list(), list()) -> {ok, list()} | {error, list()}
 %% @doc Perform a put request to Riak CS.
+-spec put_request(list(), list()) -> {ok, list()} | {error, list()}.
 put_request(Url, Body) ->
     try
         Response = erlcloud_s3:put_object(
@@ -114,8 +114,8 @@ put_request(Url, Body) ->
         error:Reason -> {error, Reason}
     end.
 
-%% @spec get_request(list()) -> {ok, list()} | {error, list()}
 %% @doc Perform a get request to Riak CS.
+-spec get_request(list()) -> {ok, list()} | {error, list()}.
 get_request(Url) ->
     try
         Response = erlcloud_s3:get_object(
@@ -127,12 +127,12 @@ get_request(Url) ->
         error:Reason -> {error, Reason}
     end.
 
-%% @spec empty_response() -> {struct, list()}
 %% @doc Empty decoded JSON placeholder.
+-spec empty_response() -> {struct, list()}.
 empty_response() -> {struct, []}.
 
-%% @spec handle_request({multipart_get, list()}) -> list()
-%% @doc Handle multipart get request.
+%% @doc Handle get/put requets.
+-spec handle_request({atom(), list()}) -> list().
 handle_request({multipart_get, Url}) ->
     case get_request(Url) of
         {ok, Content} ->
@@ -140,9 +140,6 @@ handle_request({multipart_get, Url}) ->
         _ ->
             []
     end;
-
-%% @spec handle_request({get, list()}) -> {struct, list()}
-%% @doc Handle get request.
 handle_request({get, Url}) ->
     case get_request(Url) of
         {ok, Content} ->
@@ -151,9 +148,6 @@ handle_request({get, Url}) ->
         _ ->
             empty_response()
     end;
-
-%% @spec handle_request({put, list(), list()}) -> {struct, list()}
-%% @doc Handle put request.
 handle_request({put, Url, Body}) ->
     case put_request(Url, Body) of
         {ok, {_ResponseHeaders, ResponseBody}} ->

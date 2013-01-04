@@ -16,8 +16,8 @@
          administration_bucket_name/0,
          cs_configuration/1]).
 
-%% @spec configure_s3_connection() -> term()
 %% @doc Configure the erlcloud_s3 connection instance.
+-spec configure_s3_connection() -> term().
 configure_s3_connection() ->
     RiakCsHostname = cs_configuration(cs_hostname),
     RiakCsPort = cs_configuration(cs_port),
@@ -34,19 +34,19 @@ configure_s3_connection() ->
                           RiakCsProxyHost,
                           RiakCsProxyPort).
 
-%% @spec administration_bucket_name() -> term()
 %% @doc Return the administration bucket name from the configuration.
+-spec administration_bucket_name() -> term().
 administration_bucket_name() ->
     cs_configuration(cs_administration_bucket).
 
-%% @spec cs_configuration(term()) -> term()
 %% @doc Return one configuration value from the environment.
+-spec cs_configuration(term()) -> term().
 cs_configuration(Attribute) ->
     {ok, Value} = application:get_env(riak_cs_control, Attribute),
     Value.
 
-%% @spec cs_configuration(term(), term()) -> term()
 %% @doc Return one configuration value from the environment with default.
+-spec cs_configuration(term(), term()) -> term().
 cs_configuration(Attribute, Default) ->
     case application:get_env(riak_cs_control, Attribute) of
         {ok, Value} ->

@@ -35,8 +35,8 @@ routes() ->
 allowed_methods(ReqData, Context) ->
     {['HEAD', 'GET'], ReqData, Context}.
 
-%% @spec normalize_filepath(list()) -> list()
 %% @doc Given a series of request tokens, normalize to priv dir file.
+-spec normalize_filepath(list()) -> list().
 normalize_filepath(Filepath) ->
     {ok, App} = application:get_application(?MODULE),
     filename:join([code:priv_dir(App), 'www'] ++ Filepath).
