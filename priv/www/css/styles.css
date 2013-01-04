@@ -1140,6 +1140,7 @@ input[type=checkbox] {
 }
 
 input[type=text] {
+    font-family: 'titillium', helvetica, serif;
     border: 0;
     background: #eaeaea;
     padding: 5px 10px;
