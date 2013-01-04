@@ -8,8 +8,8 @@
          url(../fonts/noticiatext-italic-webfont-svg.svg#noticia_textitalic) format('svg');
     font-weight: normal;
     font-style: italic;
-
 }
+
 @font-face {
     font-family: 'noticia';
     src: url(../fonts/noticiatext-regular-webfont-eot.eot);
@@ -19,8 +19,8 @@
          url(../fonts/noticiatext-regular-webfont-svg.svg#noticia_textregular) format('svg');
     font-weight: normal;
     font-style: normal;
-
 }
+
 @font-face {
     font-family: 'titillium';
     src: url(../fonts/titilliumtext25l001-webfont-eot.eot);
@@ -30,8 +30,8 @@
          url(../fonts/titilliumtext25l001-webfont-svg.svg#titilliumtext25l600_wt) format('svg');
     font-weight: bold;
     font-style: normal;
-
 }
+
 @font-face {
     font-family: 'titillium';
     src: url(../fonts/titilliumtext25l004-webfont-eot.eot);
@@ -113,6 +113,37 @@ table {
     margin: 0 auto;
     text-align: left;
     padding: 0 100px;
+}
+
+.constrained.smaller {
+    min-width: auto;
+    max-width: 960px;
+    padding: 0 100px 25px;
+}
+
+.create-user-message {
+    background: url(../images/form-man.png) left 37px no-repeat transparent;
+    width: 520px;
+    height: 320px;
+    position: relative;
+}
+
+.create-user-message div {
+    position: absolute;
+    right: 0;
+    top: 37px;
+    width: 273px;
+    padding: 15px;
+    font-size: 15px;
+}
+
+.create-user-message div a {
+    color: #3ed5ff;
+    white-space: nowrap;
+}
+
+.create-user-message div a:hover {
+    color: #9feaff;
 }
 
 .has-shadow {
@@ -309,6 +340,11 @@ table {
 
 .block-container {
     text-align: left;
+}
+
+.block-container.smaller {
+    width: 400px;
+    margin-right: 40px;
 }
 
 .block-container.orange {
@@ -1236,10 +1272,11 @@ tr.standard-row:nth-child(odd) {
     background: url(../images/red-ribbon.png) left top no-repeat transparent;
 }
 
-.table-ribbon-blue, .table-ribbon-red {
+.table-ribbon-blue, .table-ribbon-red, .table-ribbon-green {
     color: #fff;
     text-transform: uppercase;
     font-weight: bold;
+    font-style: normal;
     text-shadow: 0 1px 1px #000;
     width: 87px;
     margin-left: -29px;
@@ -1254,6 +1291,30 @@ tr.standard-row {
 
 tr.standard-row.disabled {
     background: #ccc;
+}
+
+tr.standard-row.admin {
+    background: #fce6ca;
+}
+
+tr.standard-row.admin .button-container .button-cell {
+    display: none;
+}
+
+tr.standard-row.admin .button-container.white-border-left {
+    border-left: 0;
+}
+
+.table-ribbon-green {
+    background: url(../images/green-ribbon.png) left top no-repeat transparent;
+}
+
+
+#loading {
+    background: url(../images/loading.png) left top no-repeat transparent;
+    height: 285px;
+    width: 286px;
+    margin: 0 auto;
 }
 
 .user-list-table {
@@ -1430,4 +1491,27 @@ rect {
 
 .capitalize {
   text-transform: capitalize;
+}
+
+@media screen and (max-width: 1176px) {
+    .create-user-message {
+        display: none;
+    }
+
+    .constrained {
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+
+    .constrained.smaller {
+        float: none;
+        margin: 25px auto 0;
+        min-width: auto;
+        max-width: auto;
+    }
+
+    .block-container.smaller {
+        margin: 0 auto;
+        float: none;
+    }
 }
