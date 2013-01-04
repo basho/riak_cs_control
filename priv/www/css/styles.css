@@ -92,6 +92,16 @@ table {
     border-spacing: 0;
 }
 
+::-webkit-input-placeholder {
+   font-family: 'titillium', helvetica, serif;
+   font-style: italic;
+}
+
+:-moz-placeholder {  
+   font-family: 'titillium', helvetica, serif;
+   font-style: italic;
+}
+
 /* REUSABLE CLASSES */
 
 .inline-block {
@@ -530,8 +540,8 @@ table {
 
 .tab-container {
     background: transparent;
-    height: 31px;
-    margin-top: -31px;
+    height: 38px;
+    margin-top: -38px;
     margin-right: -12px;
     overflow: visible;
     text-transform: uppercase;
@@ -566,7 +576,7 @@ table {
     z-index: 5;
     padding: 8px 15px 0;
     margin-top: 0;
-    height: 23px;
+    height: 33px;
     background: #fff;
     text-shadow: none;
     cursor: default;
@@ -1091,6 +1101,21 @@ input[type=radio] {
 
 input[type=checkbox] {
     margin: 3px 10px 7px 0;
+}
+
+input[type=text] {
+    border: 0;
+    background: #eaeaea;
+    padding: 5px 10px;
+    font-size: 13px;
+    margin: 0 0 0 5px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+input:focus {
+    outline : none;
 }
 
 .admin-bar {
