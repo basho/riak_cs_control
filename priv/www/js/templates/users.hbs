@@ -8,7 +8,10 @@
 
             <div class="white-slab">
                 <div class="tab-container right">
-                    <a {{action "viewUsers" this href=true}} class="active-tab">All</a>
+                    <a class="active-tab">
+                        Filter by
+                        {{view RiakCsControl.UserFilterView placeholder="All Users..."}}
+                    </a>
                     <div class="hide-shadow clear"></div>
                 </div>
                 <div class="user-list-table">

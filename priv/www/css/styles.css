@@ -92,6 +92,16 @@ table {
     border-spacing: 0;
 }
 
+::-webkit-input-placeholder {
+   font-family: 'titillium', helvetica, serif;
+   font-style: italic;
+}
+
+:-moz-placeholder {  
+   font-family: 'titillium', helvetica, serif;
+   font-style: italic;
+}
+
 /* REUSABLE CLASSES */
 
 .inline-block {
@@ -1127,6 +1137,22 @@ input[type=radio] {
 
 input[type=checkbox] {
     margin: 3px 10px 7px 0;
+}
+
+input[type=text] {
+    font-family: 'titillium', helvetica, serif;
+    border: 0;
+    background: #eaeaea;
+    padding: 5px 10px;
+    font-size: 13px;
+    margin: 0 0 0 5px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+input:focus {
+    outline : none;
 }
 
 .admin-bar {
