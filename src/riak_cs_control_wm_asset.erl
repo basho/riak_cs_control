@@ -43,22 +43,19 @@ normalize_filepath(Filepath) ->
 
 %% @doc Return a context which determines if we serve up the application
 %% template or a file resource.
-identify_resource(ReqData, Context) ->
-    case Context#context.resource of
-        undefined ->
-            case wrq:disp_path(ReqData) of
-                "" ->
-                    {true, Context#context{resource=template,
-                                           filename=undefined}};
-                _ ->
-                    Tokens = wrq:path_tokens(ReqData),
-                    Filename = normalize_filepath(Tokens),
-                    {true, Context#context{resource=filename,
-                                           filename=Filename}}
-            end;
-        _Resource ->
-            {true, Context}
-    end.
+identify_resource(ReqData, #context{resource=undefined}=Context) ->
+    case wrq:disp_path(ReqData) of
+        "" ->
+            {true, Context#context{resource=template,
+                                   filename=undefined}};
+        _ ->
+            Tokens = wrq:path_tokens(ReqData),
+            Filename = normalize_filepath(Tokens),
+            {true, Context#context{resource=filename,
+                                   filename=Filename}}
+    end;
+identify_resource(_ReqData, Context) ->
+    {true, Context}.
 
 %% @doc If the file exists, allow it through, otherwise assume true if
 %% they are asking for the application template.
