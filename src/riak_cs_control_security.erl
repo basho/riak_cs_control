@@ -15,7 +15,7 @@
 -export([csrf_token/2,
          is_protected/2]).
 
-%% @doc Store a CSRF protection token in a cookie.
+%% @doc Generate a new CSRF token.
 -spec csrf_token(term(), term()) -> list().
 csrf_token(ReqData, Context) ->
     case get_csrf_token(ReqData, Context) of
