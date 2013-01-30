@@ -17,6 +17,7 @@
 -endif.
 
 -export([init/1,
+         forbidden/2,
          allowed_methods/2,
          content_types_provided/2,
          content_types_accepted/2,
@@ -31,22 +32,32 @@
 
 -record(context, {users=undefined,user=undefined}).
 
+%% @doc Initialize the resource.
 init([]) ->
     {ok, #context{users=undefined,user=undefined}}.
 
+%% @doc Return the routes this module should respond to.
 routes() ->
     [{["users"], ?MODULE, []}].
 
+%% @doc Validate CSRF token.
+forbidden(ReqData, Context) ->
+    {riak_cs_control_security:is_protected(ReqData, Context), ReqData, Context}.
+
+%% @doc Support retrieval and creation of users.
 allowed_methods(ReqData, Context) ->
     {['HEAD', 'GET', 'POST'], ReqData, Context}.
 
+%% @doc Allow POST request to create user.
 post_is_create(ReqData, Context) ->
     {true, ReqData, Context}.
 
 %% @doc Extract key out of response from riak-cs.
+-spec extract_key_id({term(), list()}) -> list().
 extract_key_id(User) ->
     {struct, UserDetails} = User,
-    binary_to_list(proplists:get_value(list_to_binary("key_id"), UserDetails)).
+    KeyId = proplists:get_value(key_id, UserDetails),
+    binary_to_list(KeyId).
 
 %% @doc Attempt to create the user if possible, and generate the path
 %% using the key_id of the new user.
@@ -62,13 +73,16 @@ create_path(ReqData, Context) ->
             {"/users", ReqData, Context}
     end.
 
+%% @doc Provide respones in JSON only.
 content_types_provided(ReqData, Context) ->
     {[{"application/json", to_json}], ReqData, Context}.
 
+%% @doc Accept user data in JSON only.
 content_types_accepted(ReqData, Context) ->
     {[{"application/json", from_json}], ReqData, Context}.
 
-%% @doc Handle user creation.
+%% @doc Accept user input, attempt to create user and return 409 if we
+%% are unable to.
 from_json(ReqData, Context) ->
     case maybe_create_user(ReqData, Context) of
         {true, NewContext} ->
@@ -80,6 +94,7 @@ from_json(ReqData, Context) ->
             {{halt, 409}, ReqData, Context}
     end.
 
+%% @doc Return true if we were able to retrieve the user.
 resource_exists(ReqData, Context) ->
     case maybe_retrieve_users(Context) of
         {true, NewContext} ->
@@ -88,13 +103,12 @@ resource_exists(ReqData, Context) ->
             {false, ReqData, Context}
     end.
 
-%% @doc Attempt to create a user, and stick into the context for
-%% serialization later.  Return 409 on any error for now.
+%% @doc Attempt to create user and stash in the context if possible.
 maybe_create_user(ReqData, Context) ->
     case Context#context.user of
         undefined ->
             Attributes = wrq:req_body(ReqData),
-            NewAttributes = riak_cs_control_helpers:strip_root_node(Attributes),
+            NewAttributes = riak_cs_control_formatting:format_incoming_user(Attributes),
             case riak_cs_control_session:put_user(NewAttributes) of
                 {ok, Response} ->
                     {true, Context#context{user=Response}};
@@ -105,8 +119,8 @@ maybe_create_user(ReqData, Context) ->
             {true, Context}
     end.
 
-%% @doc Attempt to retrieve the user or return an exception if it doesn't
-%% exist.
+%% @doc Attempt to retrieve the users and store in the context if
+%% possible.
 maybe_retrieve_users(Context) ->
     case Context#context.users of
         undefined ->

@@ -15,12 +15,12 @@
 -behaviour(application).
 -export([start/2,stop/1]).
 
-%% @spec start(_Type, _StartArgs) -> ServerRet
 %% @doc application start callback for riak_cs_control.
+-spec start(term(), term()) -> term().
 start(_Type, _StartArgs) ->
     riak_cs_control_sup:start_link().
 
-%% @spec stop(_State) -> ServerRet
 %% @doc application stop callback for riak_cs_control.
+-spec stop(term()) -> term().
 stop(_State) ->
     ok.
