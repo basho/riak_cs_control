@@ -4,6 +4,14 @@ minispade.register('app', function() {
     ready: Ember.alias('initialize')
   });
 
+  $("body").bind("ajaxSend", function(elm, xhr, s){
+    var csrf_token = $('meta[name=csrf_token]').attr('content');
+
+    if (s.type === 'POST' || s.type === 'PUT') {
+        xhr.setRequestHeader('X-CSRF-Token', csrf_token);
+    }
+  });
+
   DS.Model.reopen({
     reload: function() {
       var store = this.get('store');

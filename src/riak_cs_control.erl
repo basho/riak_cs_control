@@ -22,30 +22,30 @@ ensure_started(App) ->
             ok
     end.
 
-%% @spec start_link() -> {ok,Pid::pid()}
 %% @doc Starts the app for inclusion in a supervisor tree
+-spec start_link() -> {ok,Pid::pid()}.
 start_link() ->
     ensure_started(inets),
     ensure_started(crypto),
     ensure_started(mochiweb),
-    application:set_env(webmachine, webmachine_logger_module, 
+    application:set_env(webmachine, webmachine_logger_module,
                         webmachine_logger),
     ensure_started(webmachine),
     riak_cs_control_sup:start_link().
 
-%% @spec start() -> ok
 %% @doc Start the riak_cs_control server.
+-spec start() -> ok.
 start() ->
     ensure_started(inets),
     ensure_started(crypto),
     ensure_started(mochiweb),
-    application:set_env(webmachine, webmachine_logger_module, 
+    application:set_env(webmachine, webmachine_logger_module,
                         webmachine_logger),
     ensure_started(webmachine),
     application:start(riak_cs_control).
 
-%% @spec stop() -> ok
 %% @doc Stop the riak_cs_control server.
+-spec stop() -> ok.
 stop() ->
     Res = application:stop(riak_cs_control),
     application:stop(webmachine),

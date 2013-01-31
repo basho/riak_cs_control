@@ -5,8 +5,8 @@
     <title>Riak CS</title>
     <link rel="icon" type="image/vnd.microsoft.icon" href="/favicon.ico" />
     <link type="text/css" rel="stylesheet" media="all" href="/css/styles.css" />
+    <meta name="csrf_token" content="{{csrf_token}}">
 </head>
-
 <body>
     <script src="/js/generated/vendor.js"></script>
     <script src="/js/generated/templates.js"></script>
@@ -20,3 +20,4 @@
     <script>minispade.require('app');</script>
 </body>
 </html>
+</head>

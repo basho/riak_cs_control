@@ -20,13 +20,13 @@
 %% supervisor callbacks
 -export([init/1]).
 
-%% @spec start_link() -> ServerRet
 %% @doc API for starting the supervisor.
+-spec start_link() -> term().
 start_link() ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
-%% @spec init([]) -> SupervisorTree
 %% @doc supervisor callback.
+-spec init([]) -> term().
 init([]) ->
     RiakCsControlSession={riak_cs_control_session,
                           {riak_cs_control_session, start_link, []},
@@ -39,7 +39,7 @@ init([]) ->
         false -> "0.0.0.0";
         Any -> Any end,
 
-    Port = riak_cs_control_helpers:cs_configuration(port),
+    Port = riak_cs_control_configuration:cs_configuration(port),
 
     Resources = [riak_cs_control_wm_user,
                  riak_cs_control_wm_users,
