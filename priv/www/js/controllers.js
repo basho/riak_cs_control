@@ -43,6 +43,20 @@ minispade.register('controllers', function() {
   RiakCsControl.UsersController = Ember.ArrayController.extend({
     sortProperties: ['isNormal', 'email'],
 
+    filteredContent: function() {
+      var filterValue = this.get('filterValue');
+      var arrangedContent = this.get('arrangedContent');
+
+      if(filterValue) {
+        return arrangedContent.filter(function(item) {
+          return item.get('name').match(new RegExp(filterValue)) ||
+                 item.get('email').match(new RegExp(filterValue));
+        });
+      } else {
+        return arrangedContent;
+      }
+    }.property('arrangedContent', 'filterValue'),
+
     enableUser: function(user) {
       this.performUserUpdate(user, function() { user.enable(); });
     },

@@ -88,6 +88,8 @@ minispade.register('views', function() {
     }
   });
 
-  RiakCsControl.UserFilterView = Ember.TextField.extend();
+  RiakCsControl.UserFilterView = Ember.TextField.extend({
+    valueBinding: 'controller.filterValue'
+  });
 
 });
