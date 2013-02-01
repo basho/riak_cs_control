@@ -1142,13 +1142,18 @@ input[type=checkbox] {
 input[type=text] {
     font-family: 'titillium', helvetica, serif;
     border: 0;
-    background: #eaeaea;
-    padding: 5px 10px;
+    background: #ffffff;
+    padding: 5px 0;
     font-size: 13px;
     margin: 0 0 0 5px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
+}
+
+.filter-tab input[type=text] {
+    background: #eaeaea;
+    padding: 5px 10px;
 }
 
 input:focus {
@@ -1342,6 +1347,10 @@ tr.standard-row.admin .button-container.white-border-left {
 
 .info-table tbody tr.selected-row {
     background: #ffebd5;
+}
+
+td.empty-state {
+    text-align: center;
 }
 
 /*

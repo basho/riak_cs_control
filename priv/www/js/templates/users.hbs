@@ -7,7 +7,7 @@
 
             <div class="white-slab">
                 <div class="tab-container right">
-                    <a class="active-tab">
+                    <a class="active-tab filter-tab">
                         Filter by
                         {{view RiakCsControl.UserFilterView placeholder="All Users..."}}
                     </a>
@@ -15,7 +15,15 @@
                 </div>
                 <div class="user-list-table">
                     <table class="info-table">
-                        {{collection RiakCsControl.UsersCollectionView contentBinding="controller.filteredContent" itemClass="standard-row"}}
+                        {{#if controller.filteredContentEmpty}}
+                            <tr>
+                                <td class="empty-state">
+                                    <img src="images/filter-man.jpg" alt="Everything has been filtered out." />
+                                </td>
+                            </tr>
+                        {{else}}
+                            {{collection RiakCsControl.UsersCollectionView contentBinding="controller.filteredContent" itemClass="standard-row"}}
+                        {{/if}}
                     </table>
                 </div>
             </div>

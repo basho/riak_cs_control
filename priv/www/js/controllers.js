@@ -57,6 +57,10 @@ minispade.register('controllers', function() {
       }
     }.property('arrangedContent', 'filterValue'),
 
+    filteredContentEmpty: function() {
+      return this.get('filteredContent').length <= 0;
+    }.property('filteredContent', 'filteredContent.@each'),
+
     enableUser: function(user) {
       this.performUserUpdate(user, function() { user.enable(); });
     },
