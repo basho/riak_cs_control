@@ -15,7 +15,10 @@ minispade.register('views', function() {
 
   RiakCsControl.UsersView = Ember.View.extend({
     templateName: 'users',
-    isLoadingBinding: 'controller.isLoading'
+
+    isLoaded: function() {
+      return this.get('controller.@each.isLoaded');
+    }.property('controller.content.@each')
   });
 
   RiakCsControl.UserItemView = Ember.View.extend({
@@ -86,6 +89,10 @@ minispade.register('views', function() {
     willDestroyElement: function () {
       this.spinner.stop();
     }
+  });
+
+  RiakCsControl.UserFilterView = Ember.TextField.extend({
+    valueBinding: 'controller.filterValue'
   });
 
 });
