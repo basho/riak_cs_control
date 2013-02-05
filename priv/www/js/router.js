@@ -1,46 +1,46 @@
 minispade.register('router', function() {
 
-  RiakCsControl.Router = Ember.Router.extend({
-    root: Ember.Route.extend({
-      index: Ember.Route.extend({
-        route: '/',
-        redirectsTo: 'users.index'
-      }),
+  RiakCsControl.Router.map(function() {
+    this.resource('users', function() {
+      this.route('new');
+    });
+  });
 
-      viewUsers: Ember.Route.transitionTo('users.index'),
+  RiakCsControl.IndexRoute = Ember.Route.extend({
+    redirect: function() {
+      this.transitionTo('users.index');
+    }
+  });
 
-      createUser: Ember.Route.transitionTo('users.create'),
+  RiakCsControl.UsersRoute = Ember.Route.extend({
+    renderTemplate: function() {
+      this.render('users');
+    }
+  });
 
-      users: Ember.Route.extend({
-        route: '/users',
+  RiakCsControl.UsersIndexRoute = Ember.Route.extend({
+    model: function() {
+      return RiakCsControl.User.find();
+    },
 
-        index: Ember.Route.extend({
-          route: '/',
+    setupController: function(controller, model) {
+      controller.set('content', model);
+    },
 
-          connectOutlets: function(router, context) {
-            router.get('applicationController').
-              connectOutlet('users', RiakCsControl.User.find());
-          }
-        }),
+    renderTemplate: function() {
+      this.render('users_index');
+    }
+  });
 
-        create: Ember.Route.extend({
-          route: '/new',
+  RiakCsControl.UsersNewRoute = Ember.Route.extend({
+    enter: function() {
+      var controller = this.get('controller');
+      console.log(controller);
+    },
 
-          enter: function(router) {
-            router.get('createUserController').enter();
-          },
-
-          exit: function(router) {
-            router.get('createUserController').exit();
-          },
-
-          connectOutlets: function(router, context) {
-            router.get('applicationController').
-              connectOutlet('createUser');
-          }
-        })
-      })
-    })
+    renderTemplate: function() {
+      this.render('users_new');
+    }
   });
 
 });

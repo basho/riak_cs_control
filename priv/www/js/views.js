@@ -1,21 +1,12 @@
 minispade.register('views', function() {
 
-  RiakCsControl.ApplicationView = Ember.View.extend({
-    templateName: 'application'
-  });
-
-  RiakCsControl.CreateUserView = Ember.View.extend({
-    templateName: 'create_user',
-
+  RiakCsControl.UsersNewView = Ember.View.extend({
     submit: function(ev) {
-      ev.preventDefault();
       this.get('controller').createUser();
     }
   });
 
-  RiakCsControl.UsersView = Ember.View.extend({
-    templateName: 'users',
-
+  RiakCsControl.UsersIndexView = Ember.View.extend({
     isLoaded: function() {
       return this.get('controller.@each.isLoaded');
     }.property('controller.content.@each')
@@ -23,6 +14,7 @@ minispade.register('views', function() {
 
   RiakCsControl.UserItemView = Ember.View.extend({
     templateName: 'users_item',
+
     classNameBindings: ['isDisabled:disabled', 'isAdmin:admin'],
 
     nameBinding: 'content.name',
@@ -47,8 +39,9 @@ minispade.register('views', function() {
 
   RiakCsControl.ButtonView = Ember.View.extend({
     tagName: 'div',
-    templateName: 'button',
     classNames: 'button-cell',
+    templateName: 'button',
+
     click: function(ev) {
       ev.preventDefault();
 

@@ -6,16 +6,16 @@
     <section class="more-than-half nav-blocks">
         <nav>
             <div class="block-container orange has-shadow right">
-                <a {{action viewUsers this href=true}} class="nav-block orange-radial" rel="nofollow">
+                {{#linkTo "users.index" classNames="nav-block orange-radial"}}
                     <span class="nav-icon list-large"></span>
                     <span class="bottom-text">List</span>
-                </a>
+                {{/linkTo}}
             </div>
             <div class="block-container green has-shadow right">
-                <a {{action createUser this href=true}} class="nav-block green-radial" rel="nofollow">
+                {{#linkTo "users.new" classNames="nav-block green-radial"}}
                     <span class="nav-icon create-large"></span>
                     <span class="bottom-text">Create</span>
-                </a>
+                {{/linkTo}}
             </div>
         </nav>
     </section>
@@ -35,7 +35,7 @@
         <div class="footer-bar blue-linear">
             <section class="half-width">
                 <div class="left footer-info">
-                    Copyright &copy; 2012 Basho Technologies, Inc.
+                    Copyright &copy; 2013 Basho Technologies, Inc.
                 </div>
             </section>
             <section class="half-width">

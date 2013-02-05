@@ -1,8 +1,6 @@
 minispade.register('app', function() {
 
-  RiakCsControl = Ember.Application.create({
-    ready: Ember.alias('initialize')
-  });
+  RiakCsControl = Ember.Application.create();
 
   $("body").bind("ajaxSend", function(elm, xhr, s){
     var csrf_token = $('meta[name=csrf_token]').attr('content');
@@ -28,14 +26,12 @@ minispade.register('app', function() {
       }
   });
 
-  RiakCsControl.Adapter = DS.RESTAdapter.extend({});
-
   RiakCsControl.Store = DS.Store.extend({
-    revision: 4,
-    adapter: RiakCsControl.Adapter.create()
+    revision: 11,
+    adapter: DS.RESTAdapter.create()
   });
 
-  RiakCsControl.store = RiakCsControl.Store.create({});
+  RiakCsControl.store = RiakCsControl.Store.create();
 
   minispade.require('router');
   minispade.require('models');

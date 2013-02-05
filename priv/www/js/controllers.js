@@ -1,8 +1,48 @@
 minispade.register('controllers', function() {
 
-  RiakCsControl.ApplicationController = Ember.Controller.extend();
+  RiakCsControl.UsersIndexController = Ember.ArrayController.extend({
+    sortProperties: ['isNormal', 'email'],
 
-  RiakCsControl.CreateUserController = Ember.ObjectController.extend({
+    filteredContent: function() {
+      var filterValue = this.get('filterValue');
+      var arrangedContent = this.get('arrangedContent');
+
+      if(arrangedContent && filterValue) {
+        return arrangedContent.filter(function(item) {
+          return item.get('name').match(new RegExp(filterValue)) ||
+                 item.get('email').match(new RegExp(filterValue));
+        });
+      } else {
+        return arrangedContent;
+      }
+    }.property('arrangedContent', 'filterValue'),
+
+    filteredContentEmpty: function() {
+      return this.get('filteredContent.length') <= 0;
+    }.property('filteredContent', 'filteredContent.@each'),
+
+    enableUser: function(user) {
+      this.performUserUpdate(user, function() { user.enable(); });
+    },
+
+    disableUser: function(user) {
+      this.performUserUpdate(user, function() { user.disable(); });
+    },
+
+    revokeCredentials: function(user) {
+      this.performUserUpdate(user, function() { user.revoke(); });
+    },
+
+    performUserUpdate: function(user, update) {
+      var transaction = RiakCsControl.get('store').transaction();
+
+      transaction.add(user);
+      update.call(user);
+      transaction.commit();
+    }
+  });
+
+  RiakCsControl.UsersNewController = Ember.ObjectController.extend({
     enter: function() {
       this.transaction = this.get('store').transaction();
       this.set('content',
@@ -37,48 +77,6 @@ minispade.register('controllers', function() {
       RiakCsControl.User.find(user.get('id'));
 
       RiakCsControl.router.send('viewUsers');
-    }
-  });
-
-  RiakCsControl.UsersController = Ember.ArrayController.extend({
-    sortProperties: ['isNormal', 'email'],
-
-    filteredContent: function() {
-      var filterValue = this.get('filterValue');
-      var arrangedContent = this.get('arrangedContent');
-
-      if(filterValue) {
-        return arrangedContent.filter(function(item) {
-          return item.get('name').match(new RegExp(filterValue)) ||
-                 item.get('email').match(new RegExp(filterValue));
-        });
-      } else {
-        return arrangedContent;
-      }
-    }.property('arrangedContent', 'filterValue'),
-
-    filteredContentEmpty: function() {
-      return this.get('filteredContent').length <= 0;
-    }.property('filteredContent', 'filteredContent.@each'),
-
-    enableUser: function(user) {
-      this.performUserUpdate(user, function() { user.enable(); });
-    },
-
-    disableUser: function(user) {
-      this.performUserUpdate(user, function() { user.disable(); });
-    },
-
-    revokeCredentials: function(user) {
-      this.performUserUpdate(user, function() { user.revoke(); });
-    },
-
-    performUserUpdate: function(user, update) {
-      var transaction = RiakCsControl.get('store').transaction();
-
-      transaction.add(user);
-      update.call(user);
-      transaction.commit();
     }
   });
 
