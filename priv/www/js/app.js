@@ -1,6 +1,8 @@
 minispade.register('app', function() {
 
-  RiakCsControl = Ember.Application.create();
+  RiakCsControl = Ember.Application.create({
+    LOG_TRANSITIONS: true
+  });
 
   $("body").bind("ajaxSend", function(elm, xhr, s){
     var csrf_token = $('meta[name=csrf_token]').attr('content');
@@ -13,8 +15,9 @@ minispade.register('app', function() {
   DS.Model.reopen({
     reload: function() {
       var store = this.get('store');
-      store.get('adapter').find(store, this.constructor, this.get('id'));
-      }
+      var adapter = store.get('adapter');
+      adapter.find(store, this.constructor, this.get('id'));
+    }
   });
 
   DS.RecordArray.reopen({
@@ -22,7 +25,8 @@ minispade.register('app', function() {
       Ember.assert("Can only reload base RecordArrays",
         this.constructor === DS.RecordArray);
       var store = this.get('store');
-      store.get('adapter').findAll(store, this.get('type'));
+      var adapter = store.get('adapter');
+      adapter.findAll(store, this.get('type'));
       }
   });
 
