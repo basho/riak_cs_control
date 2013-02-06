@@ -43,40 +43,19 @@ minispade.register('controllers', function() {
   });
 
   RiakCsControl.UsersNewController = Ember.ObjectController.extend({
-    enter: function() {
-      this.transaction = this.get('store').transaction();
-      this.set('content',
-        this.transaction.createRecord(RiakCsControl.User, {}));
-    },
-
     createUser: function() {
-      this.transaction.commit();
-      this.transaction = null;
+      var transaction = this.get('content.transaction');
+      transaction.commit();
 
+      // Handle the success case, once the record is confirmed,
+      // materialize the record by forcing a load again (unfortunate)
+      // and redirect back to the main page.
       this.get('content').addObserver('id', this, 'viewUsers');
     },
 
-    exit: function() {
-      if(this.transaction) {
-        this.transaction.rollback();
-      }
-      this.transaction = null;
-    },
-
     viewUsers: function(user) {
-      //
-      // HACK:
-      //
-      // We have two options here to get this change to propagate
-      // through the application, 1. set all observers of users to watch
-      // this create form for submitted transactions or use reverse
-      // callbacks, or 2. manually trigger the user to load which will
-      // propogate to anything that has a recordarray observing the user
-      // identity map.  I've chosen the latter for now.
-      //
       RiakCsControl.User.find(user.get('id'));
-
-      RiakCsControl.router.send('viewUsers');
+      this.transitionToRoute('users.index');
     }
   });
 

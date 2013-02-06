@@ -22,4 +22,20 @@ minispade.register('router', function() {
     }
   });
 
+  RiakCsControl.UsersNewRoute = Ember.Route.extend({
+    model: function() {
+      var transaction = this.get('store').transaction();
+      return transaction.createRecord(RiakCsControl.User, {});
+    },
+
+    setupController: function(controller, model) {
+      controller.set('content', model);
+    },
+
+    exit: function() {
+      this._super();
+      this.get('store').transaction().rollback();
+    }
+  });
+
 });

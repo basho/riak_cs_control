@@ -1,8 +1,6 @@
 minispade.register('app', function() {
 
-  RiakCsControl = Ember.Application.create({
-    LOG_TRANSITIONS: true
-  });
+  RiakCsControl = Ember.Application.create();
 
   $("body").bind("ajaxSend", function(elm, xhr, s){
     var csrf_token = $('meta[name=csrf_token]').attr('content');
