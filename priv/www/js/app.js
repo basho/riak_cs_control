@@ -12,31 +12,6 @@ minispade.register('app', function() {
     }
   });
 
-  DS.Model.reopen({
-    reload: function() {
-      var store = this.get('store');
-      var adapter = store.get('adapter');
-      adapter.find(store, this.constructor, this.get('id'));
-    }
-  });
-
-  DS.RecordArray.reopen({
-    reload: function() {
-      Ember.assert("Can only reload base RecordArrays",
-        this.constructor === DS.RecordArray);
-      var store = this.get('store');
-      var adapter = store.get('adapter');
-      adapter.findAll(store, this.get('type'));
-      }
-  });
-
-  RiakCsControl.Store = DS.Store.extend({
-    revision: 11,
-    adapter: DS.RESTAdapter.create()
-  });
-
-  RiakCsControl.store = RiakCsControl.Store.create();
-
   minispade.require('router');
   minispade.require('models');
   minispade.require('controllers');

@@ -1,16 +1,41 @@
 minispade.register('models', function() {
 
+  DS.Model.reopen({
+    reload: function() {
+      var store = this.get('store');
+      var adapter = store.get('adapter');
+      adapter.find(store, this.constructor, this.get('id'));
+    }
+  });
+
+  DS.RecordArray.reopen({
+    reload: function() {
+      Ember.assert("Can only reload base RecordArrays",
+        this.constructor === DS.RecordArray);
+      var store = this.get('store');
+      var adapter = store.get('adapter');
+      adapter.findAll(store, this.get('type'));
+      }
+  });
+
+  RiakCsControl.serializer = DS.JSONSerializer.create();
+
+  RiakCsControl.serializer.configure('RiakCsControl.User', {
+    primaryKey: 'key_id'
+  });
+
+  RiakCsControl.adapter = DS.RESTAdapter.create({
+    serializer: RiakCsControl.serializer
+  });
+
+  RiakCsControl.Store = DS.Store.extend({
+    revision: 11,
+    adapter: RiakCsControl.adapter
+  });
+
+  RiakCsControl.store = RiakCsControl.Store.create();
+
   RiakCsControl.User = DS.Model.extend({
-    primaryKey: "key_id",
-
-    // We don't use ID in the app right now, so ignore it and alias the
-    // key_id to the id to work around outstanding ember-data bugs.
-    //
-    // id: DS.attr("string"),
-    id: function() {
-      return this.get('key_id');
-    }.property('key_id'),
-
     name: DS.attr("string"),
     email: DS.attr("string"),
     key_id: DS.attr("string"),
