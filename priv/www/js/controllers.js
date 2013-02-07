@@ -45,12 +45,28 @@ minispade.register('controllers', function() {
   RiakCsControl.UsersNewController = Ember.ObjectController.extend({
     createUser: function() {
       var transaction = this.get('content.transaction');
-      transaction.commit();
+      var content = this.get('content');
 
       // Handle the success case, once the record is confirmed,
       // materialize the record by forcing a load again (unfortunate)
       // and redirect back to the main page.
-      this.get('content').addObserver('id', this, 'viewUsers');
+      content.addObserver('id', this, 'viewUsers');
+
+      // Handle error states.
+      //
+      content.one('becameError', function() {
+        this.set('errorState', true);
+      });
+
+      content.one('becameInvalid', function() {
+        this.set('errorState', true);
+      });
+
+      content.one('becameClean', function() {
+        this.set('errorState', false);
+      });
+
+      transaction.commit();
     },
 
     viewUsers: function(user) {
