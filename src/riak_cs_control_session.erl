@@ -14,6 +14,12 @@
 
 -behaviour(gen_server).
 
+-type url() :: list().
+-type request_type() :: multipart_get | get | put.
+-type attributes() :: list().
+-type response() :: list() | tuple().
+-type body() :: list().
+
 %% API
 -export([start_link/0,
          get_users/0,
@@ -100,7 +106,7 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 
 %% @doc Perform a put request to Riak CS.
--spec put_request(list(), list()) -> {ok, list()} | {error, list()}.
+-spec put_request(url(), body()) -> {ok, response()} | {error, term()}.
 put_request(Url, Body) ->
     try
         Response = erlcloud_s3:put_object(
@@ -115,7 +121,7 @@ put_request(Url, Body) ->
     end.
 
 %% @doc Perform a get request to Riak CS.
--spec get_request(list()) -> {ok, list()} | {error, list()}.
+-spec get_request(url()) -> {ok, response()} | {error, term()}.
 get_request(Url) ->
     try
         Response = erlcloud_s3:get_object(
@@ -132,7 +138,9 @@ get_request(Url) ->
 empty_response() -> {struct, []}.
 
 %% @doc Handle get/put requets.
--spec handle_request({atom(), list()}) -> list().
+-spec handle_request({request_type(), url()} |
+                     {request_type(), url(), attributes()}) ->
+    response() | list().
 handle_request({multipart_get, Url}) ->
     case get_request(Url) of
         {ok, Content} ->

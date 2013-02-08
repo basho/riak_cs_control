@@ -48,8 +48,8 @@ start() ->
 -spec stop() -> ok.
 stop() ->
     Res = application:stop(riak_cs_control),
-    application:stop(webmachine),
-    application:stop(mochiweb),
-    application:stop(crypto),
-    application:stop(inets),
+    _ = application:stop(webmachine),
+    _ = application:stop(mochiweb),
+    _ = application:stop(crypto),
+    _ = application:stop(inets),
     Res.
