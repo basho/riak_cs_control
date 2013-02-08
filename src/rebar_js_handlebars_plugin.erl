@@ -140,9 +140,13 @@ read(File) ->
     end.
 
 normalize_paths(Paths, Basedir) ->
-    lists:foldr(fun(X, Acc) -> [normalize_path(X, Basedir) | Acc] end, [], Paths).
+    lists:foldr(fun(X, Acc) ->
+                [{X, normalize_path(X, Basedir)} | Acc] end, [], Paths).
 normalize_path(Path, Basedir) ->
     filename:join([Basedir, Path]).
+
+template_name(Source, SourceExt) ->
+    filename:rootname(Source, SourceExt).
 
 build_each([]) ->
     ok;
@@ -150,8 +154,7 @@ build_each([{Destination, Sources, Options} | Rest]) ->
     Target = option(target, Options),
     Compiler = option(compiler, Options),
     SourceExt = option(source_ext, Options),
-    Contents = [handlebars(filename:basename(Source, SourceExt), read(Source), Target, Compiler)
-                    || Source <- Sources],
+    Contents = [handlebars(template_name(SourceName, SourceExt), read(SourceFile), Target, Compiler) || {SourceName, SourceFile} <- Sources],
     Concatenated = rebar_js_concatenator_plugin:concatenate(Contents),
     case file:write_file(Destination, Concatenated, [write]) of
         ok ->

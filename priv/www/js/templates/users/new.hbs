@@ -1,4 +1,7 @@
     <section class="constrained smaller info">
+        {{#if controller.errorState}}
+          <div class="notification red">An error occurred. Please try your request again later.</div>
+        {{/if}}
 
         <div class="block-container smaller white left">
             <h1 class="title">Create User</h1>

@@ -1,46 +1,41 @@
 minispade.register('router', function() {
 
-  RiakCsControl.Router = Ember.Router.extend({
-    root: Ember.Route.extend({
-      index: Ember.Route.extend({
-        route: '/',
-        redirectsTo: 'users.index'
-      }),
+  RiakCsControl.Router.map(function() {
+    this.resource('users', function() {
+      this.route('new');
+    });
+  });
 
-      viewUsers: Ember.Route.transitionTo('users.index'),
+  RiakCsControl.IndexRoute = Ember.Route.extend({
+    redirect: function() {
+      this.transitionTo('users.index');
+    }
+  });
 
-      createUser: Ember.Route.transitionTo('users.create'),
+  RiakCsControl.UsersIndexRoute = Ember.Route.extend({
+    model: function() {
+      return RiakCsControl.User.find();
+    },
 
-      users: Ember.Route.extend({
-        route: '/users',
+    setupController: function(controller, model) {
+      controller.set('content', model);
+    }
+  });
 
-        index: Ember.Route.extend({
-          route: '/',
+  RiakCsControl.UsersNewRoute = Ember.Route.extend({
+    model: function() {
+      var transaction = this.get('store').transaction();
+      return transaction.createRecord(RiakCsControl.User, {});
+    },
 
-          connectOutlets: function(router, context) {
-            router.get('applicationController').
-              connectOutlet('users', RiakCsControl.User.find());
-          }
-        }),
+    setupController: function(controller, model) {
+      controller.set('content', model);
+    },
 
-        create: Ember.Route.extend({
-          route: '/new',
-
-          enter: function(router) {
-            router.get('createUserController').enter();
-          },
-
-          exit: function(router) {
-            router.get('createUserController').exit();
-          },
-
-          connectOutlets: function(router, context) {
-            router.get('applicationController').
-              connectOutlet('createUser');
-          }
-        })
-      })
-    })
+    exit: function() {
+      this._super();
+      this.get('store').transaction().rollback();
+    }
   });
 
 });

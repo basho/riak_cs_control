@@ -1,53 +1,13 @@
 minispade.register('controllers', function() {
 
-  RiakCsControl.ApplicationController = Ember.Controller.extend();
-
-  RiakCsControl.CreateUserController = Ember.ObjectController.extend({
-    enter: function() {
-      this.transaction = this.get('store').transaction();
-      this.set('content',
-        this.transaction.createRecord(RiakCsControl.User, {}));
-    },
-
-    createUser: function() {
-      this.transaction.commit();
-      this.transaction = null;
-
-      this.get('content').addObserver('id', this, 'viewUsers');
-    },
-
-    exit: function() {
-      if(this.transaction) {
-        this.transaction.rollback();
-      }
-      this.transaction = null;
-    },
-
-    viewUsers: function(user) {
-      //
-      // HACK:
-      //
-      // We have two options here to get this change to propagate
-      // through the application, 1. set all observers of users to watch
-      // this create form for submitted transactions or use reverse
-      // callbacks, or 2. manually trigger the user to load which will
-      // propogate to anything that has a recordarray observing the user
-      // identity map.  I've chosen the latter for now.
-      //
-      RiakCsControl.User.find(user.get('id'));
-
-      RiakCsControl.router.send('viewUsers');
-    }
-  });
-
-  RiakCsControl.UsersController = Ember.ArrayController.extend({
+  RiakCsControl.UsersIndexController = Ember.ArrayController.extend({
     sortProperties: ['isNormal', 'email'],
 
     filteredContent: function() {
       var filterValue = this.get('filterValue');
       var arrangedContent = this.get('arrangedContent');
 
-      if(filterValue) {
+      if(arrangedContent && filterValue) {
         return arrangedContent.filter(function(item) {
           return item.get('name').match(new RegExp(filterValue)) ||
                  item.get('email').match(new RegExp(filterValue));
@@ -58,7 +18,7 @@ minispade.register('controllers', function() {
     }.property('arrangedContent', 'filterValue'),
 
     filteredContentEmpty: function() {
-      return this.get('filteredContent').length <= 0;
+      return this.get('filteredContent.length') <= 0;
     }.property('filteredContent', 'filteredContent.@each'),
 
     enableUser: function(user) {
@@ -79,6 +39,39 @@ minispade.register('controllers', function() {
       transaction.add(user);
       update.call(user);
       transaction.commit();
+    }
+  });
+
+  RiakCsControl.UsersNewController = Ember.ObjectController.extend({
+    createUser: function() {
+      var transaction = this.get('content.transaction');
+      var content = this.get('content');
+
+      // Handle the success case, once the record is confirmed,
+      // materialize the record by forcing a load again (unfortunate)
+      // and redirect back to the main page.
+      content.addObserver('id', this, 'viewUsers');
+
+      // Handle error states.
+      //
+      content.one('becameError', function() {
+        this.set('errorState', true);
+      });
+
+      content.one('becameInvalid', function() {
+        this.set('errorState', true);
+      });
+
+      content.one('becameClean', function() {
+        this.set('errorState', false);
+      });
+
+      transaction.commit();
+    },
+
+    viewUsers: function(user) {
+      RiakCsControl.User.find(user.get('id'));
+      this.transitionToRoute('users.index');
     }
   });
 

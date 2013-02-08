@@ -1,28 +1,20 @@
 minispade.register('views', function() {
 
-  RiakCsControl.ApplicationView = Ember.View.extend({
-    templateName: 'application'
-  });
-
-  RiakCsControl.CreateUserView = Ember.View.extend({
-    templateName: 'create_user',
-
+  RiakCsControl.UsersNewView = Ember.View.extend({
     submit: function(ev) {
-      ev.preventDefault();
       this.get('controller').createUser();
     }
   });
 
-  RiakCsControl.UsersView = Ember.View.extend({
-    templateName: 'users',
-
+  RiakCsControl.UsersIndexView = Ember.View.extend({
     isLoaded: function() {
       return this.get('controller.@each.isLoaded');
     }.property('controller.content.@each')
   });
 
-  RiakCsControl.UserItemView = Ember.View.extend({
-    templateName: 'users_item',
+  RiakCsControl.UsersItemView = Ember.View.extend({
+    templateName: 'users/item',
+
     classNameBindings: ['isDisabled:disabled', 'isAdmin:admin'],
 
     nameBinding: 'content.name',
@@ -42,13 +34,15 @@ minispade.register('views', function() {
 
   RiakCsControl.UsersCollectionView = Ember.CollectionView.extend({
     tagName: 'tbody',
-    itemViewClass: RiakCsControl.UserItemView
+    itemViewClass: RiakCsControl.UsersItemView
   });
 
   RiakCsControl.ButtonView = Ember.View.extend({
     tagName: 'div',
-    templateName: 'button',
     classNames: 'button-cell',
+
+    templateName: 'users/button',
+
     click: function(ev) {
       ev.preventDefault();
 

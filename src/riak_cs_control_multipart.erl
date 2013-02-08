@@ -39,7 +39,7 @@ parse_bodies(Parts) ->
 merge_bodies(Bodies) -> lists:flatten(Bodies).
 
 %% @doc Parse multipart user response
--spec parse_multipart_response(binary()) -> list().
+-spec parse_multipart_response(list()) -> list().
 parse_multipart_response(Response) ->
     Content = proplists:get_value(content, Response),
     ContentType = proplists:get_value(content_type, Response),

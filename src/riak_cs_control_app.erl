@@ -16,7 +16,7 @@
 -export([start/2,stop/1]).
 
 %% @doc application start callback for riak_cs_control.
--spec start(term(), term()) -> term().
+-spec start(term(), term()) -> {'error',_} | {'ok',pid()} | {'ok',pid(),_}.
 start(_Type, _StartArgs) ->
     riak_cs_control_sup:start_link().
 
