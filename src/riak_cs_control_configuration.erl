@@ -32,7 +32,8 @@ configure_s3_connection() ->
                           RiakCsPort,
                           RiakCsProtocol,
                           RiakCsProxyHost,
-                          RiakCsProxyPort).
+                          RiakCsProxyPort,
+                          []).
 
 %% @doc Return the administration bucket name from the configuration.
 -spec administration_bucket_name() -> term().
