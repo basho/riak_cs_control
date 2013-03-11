@@ -1,8 +1,8 @@
-REPO						?= riak_cs_control
-PKG_NAME        ?= riak_cs_control
+REPO		?= riak_cs_control
+
 PKG_REVISION    ?= $(shell git describe --tags)
-PKG_VERSION			?= $(shell git describe --tags | tr - .)
-PKG_ID           = $(PKG_NAME)-$(PKG_VERSION)
+PKG_VERSION	?= $(shell git describe --tags | tr - .)
+PKG_ID           = riak-cs-control-$(PKG_VERSION)
 PKG_BUILD        = 1
 BASE_DIR         = $(shell pwd)
 ERLANG_BIN       = $(shell dirname $(shell which erl))
@@ -36,14 +36,14 @@ rel: deps compile
 	@./rebar generate skip_deps=true $(OVERLAY_VARS)
 
 relclean:
-	rm -rf rel/riak_cs_control
+	rm -rf rel/riak-cs-control
 
 ##
 ## Developer targets
 ##
 stage : rel
-	$(foreach dep,$(wildcard deps/*), rm -rf rel/riak_cs_control/lib/$(shell basename $(dep))-* && ln -sf $(abspath $(dep)) rel/riak_cs_control/lib;)
-	$(foreach app,$(wildcard apps/*), rm -rf rel/riak_cs_control/lib/$(shell basename $(app))-* && ln -sf $(abspath $(app)) rel/riak_cs_control/lib;)
+	$(foreach dep,$(wildcard deps/*), rm -rf rel/riak-cs-control/lib/$(shell basename $(dep))-* && ln -sf $(abspath $(dep)) rel/riak-cs-control/lib;)
+	$(foreach app,$(wildcard apps/*), rm -rf rel/riak-cs-control/lib/$(shell basename $(app))-* && ln -sf $(abspath $(app)) rel/riak-cs-control/lib;)
 
 ##
 ## Doc targets
@@ -53,7 +53,7 @@ docs:
 
 APPS = kernel stdlib sasl erts ssl tools os_mon runtime_tools crypto inets \
 	xmerl webtool eunit syntax_tools compiler
-PLT = $(HOME)/.riak_cs_control_dialyzer_plt
+PLT = $(HOME)/.riak-cs-control_dialyzer_plt
 
 check_plt: compile
 	dialyzer --check_plt --plt $(PLT) --apps $(APPS)
@@ -81,17 +81,17 @@ cleanplt:
 ## Packaging targets
 ##
 .PHONY: package
-export PKG_NAME PKG_VERSION PKG_ID PKG_BUILD BASE_DIR ERLANG_BIN REBAR OVERLAY_VARS RELEASE
+export PKG_VERSION PKG_ID PKG_BUILD BASE_DIR ERLANG_BIN REBAR OVERLAY_VARS RELEASE
 package.src: deps
 	mkdir -p package
 	rm -rf package/$(PKG_ID)
 	git archive --format=tar --prefix=$(PKG_ID)/ $(PKG_REVISION)| (cd package && tar -xf -)
 	make -C package/$(PKG_ID) deps
 	for dep in package/$(PKG_ID)/deps/*; do \
-						 echo "Processing dep: $${dep}"; \
-						 mkdir -p $${dep}/priv; \
-						 git --git-dir=$${dep}/.git describe --tags >$${dep}/priv/vsn.git; \
-				done
+		echo "Processing dep: $${dep}"; \
+		mkdir -p $${dep}/priv; \
+		git --git-dir=$${dep}/.git describe --tags >$${dep}/priv/vsn.git; \
+	done
 	find package/$(PKG_ID) -depth -name ".git" -exec rm -rf {} \;
 	tar -C package -czf package/$(PKG_ID).tar.gz $(PKG_ID)
 

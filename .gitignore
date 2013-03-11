@@ -3,5 +3,5 @@ ebin/
 *.dump
 priv/log
 priv/www/js/generated/*.js
-rel/riak_cs_control
+rel/riak-cs-control
 .eunit
