@@ -1,6 +1,6 @@
 # What is Riak CS Control?
 
-Riak CS Control is a standalone user management application for Riak CS.
+Riak CS Control is a standalone user management application for Riak CS.  It provides a user interface for filtering, disabling, creating and managing users in a Riak CS Cluster.
 
 ## Configuring
 
@@ -32,4 +32,4 @@ In the ```etc/app.config``` file, configure the application with the information
 
 ## Running 
 
-Start Riak CS Control as you would Riak or Riak CS with the following: ```riak-cs-control start```
+Start Riak CS Control as you would Riak or Riak CS with the following: ```riak-cs-control start```  
