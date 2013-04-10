@@ -14,8 +14,6 @@
 
 -behaviour(supervisor).
 
--type supervisor() :: 'ignore' | {'ok', any()}.
-
 %% External exports
 -export([start_link/0]).
 
@@ -27,7 +25,6 @@ start_link() ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 %% @doc supervisor callback.
--spec init([]) -> supervisor().
 init([]) ->
     RiakCsControlSession={riak_cs_control_session,
                           {riak_cs_control_session, start_link, []},
