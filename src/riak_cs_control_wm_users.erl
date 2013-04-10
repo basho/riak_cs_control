@@ -56,7 +56,7 @@ post_is_create(ReqData, Context) ->
 -spec extract_key_id({term(), list()}) -> list().
 extract_key_id(User) ->
     {struct, UserDetails} = User,
-    KeyId = proplists:get_value(key_id, UserDetails),
+    KeyId = proplists:get_value(key_id, UserDetails, <<"">>),
     binary_to_list(KeyId).
 
 %% @doc Attempt to create the user if possible, and generate the path
