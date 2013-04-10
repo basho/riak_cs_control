@@ -67,24 +67,40 @@ init([]) ->
     {ok, #state{}}.
 
 handle_call(get_users, _From, State) ->
-    Response = handle_request({multipart_get, "users"}),
-    Users = riak_cs_control_formatting:format_users(Response),
-    {reply, {ok, Users}, State};
+    case handle_request({multipart_get, "users"}) of
+        {ok, Response} ->
+            Users = riak_cs_control_formatting:format_users(Response),
+            {reply, {ok, Users}, State};
+        Error ->
+            {reply, Error, State}
+    end;
 
 handle_call({get_user, KeyId}, _From, State) ->
-    Response = handle_request({get, "user/" ++ KeyId}),
-    User = riak_cs_control_formatting:format_user(Response),
-    {reply, {ok, User}, State};
+    case handle_request({get, "user/" ++ KeyId}) of
+        {ok, Response} ->
+            User = riak_cs_control_formatting:format_user(Response),
+            {reply, {ok, User}, State};
+        Error ->
+            {reply, Error, State}
+    end;
 
 handle_call({put_user, Attributes}, _From, State) ->
-    Response = handle_request({put, "user", Attributes}),
-    User = riak_cs_control_formatting:format_user(Response),
-    {reply, {ok, User}, State};
+    case handle_request({put, "user", Attributes}) of
+        {ok, Response} ->
+            User = riak_cs_control_formatting:format_user(Response),
+            {reply, {ok, User}, State};
+        Error ->
+            {reply, Error, State}
+    end;
 
 handle_call({put_user, KeyId, Attributes}, _From, State) ->
-    Response = handle_request({put, "user/" ++ KeyId, Attributes}),
-    User = riak_cs_control_formatting:format_user(Response),
-    {reply, {ok, User}, State};
+    case handle_request({put, "user/" ++ KeyId, Attributes}) of
+        {ok, Response} ->
+            User = riak_cs_control_formatting:format_user(Response),
+            {reply, {ok, User}, State};
+        Error ->
+            {reply, Error, State}
+    end;
 
 handle_call(_Request, _From, State) ->
     {reply, ok, State}.
@@ -140,26 +156,26 @@ empty_response() -> {struct, []}.
 %% @doc Handle get/put requets.
 -spec handle_request({request_type(), url()} |
                      {request_type(), url(), attributes()}) ->
-    response() | list().
+    {ok, response()} | {error, term()}.
 handle_request({multipart_get, Url}) ->
     case get_request(Url) of
         {ok, Content} ->
-            riak_cs_control_multipart:parse_multipart_response(Content);
+            {ok, riak_cs_control_multipart:parse_multipart_response(Content)};
         _ ->
-            []
+            {ok, []}
     end;
 handle_request({get, Url}) ->
     case get_request(Url) of
         {ok, Content} ->
             Body = proplists:get_value(content, Content),
-            mochijson2:decode(Body);
+            {ok, mochijson2:decode(Body)};
         _ ->
-            empty_response()
+            {ok, empty_response()}
     end;
 handle_request({put, Url, Body}) ->
     case put_request(Url, Body) of
         {ok, {_ResponseHeaders, ResponseBody}} ->
-            mochijson2:decode(ResponseBody);
-        _ ->
-            empty_response()
+            {ok, mochijson2:decode(ResponseBody)};
+        {error, Error} ->
+            {error, Error}
     end.
