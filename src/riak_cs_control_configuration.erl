@@ -14,7 +14,9 @@
 
 -export([configure_s3_connection/0,
          administration_bucket_name/0,
-         cs_configuration/1]).
+         cs_configuration/1,
+         cs_configuration/2
+]).
 
 %% @doc Configure the erlcloud_s3 connection instance.
 -spec configure_s3_connection() -> term().
