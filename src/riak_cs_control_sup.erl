@@ -41,6 +41,7 @@ init([]) ->
 
     Resources = [riak_cs_control_wm_user,
                  riak_cs_control_wm_users,
+                 riak_cs_control_wm_disk_usage,
                  riak_cs_control_wm_asset],
 
     Dispatch = lists:flatten([Module:routes() || Module <- Resources]),
