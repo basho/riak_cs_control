@@ -1,5 +1,9 @@
 minispade.register('views', function() {
 
+  RiakCsControl.DiskUsageView = Ember.View.extend({
+    templateName: 'disk_usage'
+  });
+
   RiakCsControl.UsersNewView = Ember.View.extend({
     submit: function(ev) {
       this.get('controller').createUser();

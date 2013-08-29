@@ -14,5 +14,4 @@ minispade.register('app', function() {
   minispade.require('models');
   minispade.require('controllers');
   minispade.require('views');
-
 });

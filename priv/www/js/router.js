@@ -1,6 +1,7 @@
 minispade.register('router', function() {
 
   RiakCsControl.Router.map(function() {
+    this.route("disk_usage", { path: "/disk_usage" });
     this.resource('users', function() {
       this.route('new');
     });

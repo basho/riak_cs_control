@@ -1,5 +1,8 @@
 minispade.register('controllers', function() {
 
+  RiakCsControl.DiskUsageIndexController = Ember.ObjectController.extend({
+  });
+
   RiakCsControl.UsersIndexController = Ember.ArrayController.extend({
     sortProperties: ['isNormal', 'email'],
 
