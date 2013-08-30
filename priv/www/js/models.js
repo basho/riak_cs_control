@@ -1,5 +1,9 @@
 minispade.register('models', function() {
 
+  DS.RESTAdapter.configure("plurals", {
+    disk_usage: "disk_usage"
+  });
+
   DS.Model.reopen({
     reload: function() {
       var store = this.get('store');
@@ -74,6 +78,15 @@ minispade.register('models', function() {
     didUpdate: function() {
       this.reload();
     }
+  });
+
+  RiakCsControl.DiskUsage = DS.Model.extend({
+    cluster_capacity: DS.attr("number"),
+    cluster_disk_usage_kb: DS.attr("number"),
+    cluster_disk_free_kb: DS.attr("number"),
+    object_storage_capacity_remaining_kb: DS.attr("number"),
+    cluster_node_count: DS.attr("number"),
+    n_val: DS.attr("number")
   });
 
 });
