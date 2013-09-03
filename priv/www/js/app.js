@@ -15,5 +15,3 @@ minispade.register('app', function() {
   minispade.require('controllers');
   minispade.require('views');
 });
-
-Ember.LOG_BINDINGS = true;
