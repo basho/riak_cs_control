@@ -1,7 +1,6 @@
 minispade.register('router', function() {
 
   RiakCsControl.Router.map(function() {
-    // this.route("disk_usage", { path: "/disk_usage" });
     this.resource('disk_usage');
     this.resource('users', function() {
       this.route('new');
@@ -40,14 +39,7 @@ minispade.register('router', function() {
     }
   });
 
-
   RiakCsControl.DiskUsageRoute = Ember.Route.extend({
-    model: function() {
-      return RiakCsControl.DiskUsage.find();
-    },
-    setupController: function(controller, model) {
-      controller.set('content', model);
-    }
   });
 
 });

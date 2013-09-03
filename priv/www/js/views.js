@@ -2,8 +2,6 @@ minispade.register('views', function() {
 
   RiakCsControl.DiskUsageView = Ember.View.extend({
     templateName: 'disk_usage'
-
-    // clusterCapacityBinding: 'content.cluster_capacity'
   });
 
   RiakCsControl.UsersNewView = Ember.View.extend({

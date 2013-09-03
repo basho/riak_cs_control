@@ -1,6 +1,30 @@
 minispade.register('controllers', function() {
 
   RiakCsControl.DiskUsageController = Ember.ObjectController.extend({
+    init: function() {
+      this._super();
+      this.load();
+    },
+
+    load: function () {
+      var that = this;
+      $.ajax({
+        type: 'GET',
+        url: '/disk_usage',
+        dataType: 'json',
+
+        success: function (data) {
+          usage = RiakCsControl.DiskUsage.createRecord(data.disk_usage);
+          that.set('content', usage);
+        }
+      });
+    },
+    /**
+     * Call the load function.
+     */
+    reload: function () {
+      this.load();
+    }
   });
 
   RiakCsControl.UsersIndexController = Ember.ArrayController.extend({
