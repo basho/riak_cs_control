@@ -2,7 +2,7 @@
 {application, riak_cs_control,
  [
   {description, "Webmachine-based administration interface for Riak CS."},
-  {vsn, "1.0.1"},
+  {vsn, git},
   {modules, []},
   {registered, []},
   {applications, [
