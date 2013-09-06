@@ -136,8 +136,7 @@ minispade.register('controllers', function() {
      */
     normalizedAbnormal: function() {
       return this.get('data')[0];
-    }.property('data'),
-
+    }.property('data')
   });
 
   RiakCsControl.UsersIndexController = Ember.ArrayController.extend({
@@ -180,51 +179,6 @@ minispade.register('controllers', function() {
       update.call(user);
       transaction.commit();
     }
-  });
-
-  /**
-   * @class
-   *
-   * Container view for the disk usage chart.
-   */
-  RiakCsControl.DiskUsageChart = Ember.View.extend(
-    RiakCsControl.PieChart,
-    /** @scope RiakCsControl.DiskUsageChart.prototype */ {
-    templateName: 'disk-usage-chart',
-
-    classNames: ['chart'],
-
-    clusterDiskUsageKbBinding: 'content.cluster_disk_usage_kb',
-    clusterDiskFreeKbBinding: 'content.cluster_disk_free_kb',
-    clusterCapacityBinding: 'content.cluster_capacity',
-
-    data: function() {
-      var clusterDiskUsageKb = this.get('clusterDiskUsageKb');
-      var clusterDiskFreeKb = this.get('clusterDiskFreeKb');
-      var clusterCapacity = this.get('clusterCapacity');
-
-      var normalizedDiskFree;
-      var normalizedDiskUsed;
-
-      if(clusterDiskUsageKb > 0) {
-        normalizedDiskUsed =
-          Math.round((clusterCapacity / clusterDiskUsageKb) * 100);
-        normalizedDiskFree = 100 - normalizedDiskUsed;
-      } else {
-        // Default
-        normalizedDiskUsed = 0;
-        normalizedDiskFree = 100;
-      }
-
-      return [normalizedDiskUsed, normalizedDiskFree];
-    }.property('clusterDiskUsageKb', 'clusterDiskFreeKb', 'clusterCapacity'),
-
-    id: '#disk-usage-chart',
-
-    abnormalColor: "#ffb765",
-
-    normalColor: "#84ff7e"
-
   });
 
   RiakCsControl.UsersNewController = Ember.ObjectController.extend({
