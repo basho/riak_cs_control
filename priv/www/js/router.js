@@ -46,7 +46,6 @@ minispade.register('router', function() {
     },
 
     setupController: function(controller, model) {
-      console.log(model);
       controller.set('content', model);
     }
   });
