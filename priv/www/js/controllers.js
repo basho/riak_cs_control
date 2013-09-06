@@ -219,24 +219,26 @@ minispade.register('controllers', function() {
 
     classNames: ['chart'],
 
-    data: function() {
-      // var partitionCount = this.get('partitionCount');
-      // var quorumUnavailableCount = this.get('quorumUnavailableCount');
+    clusterDiskUsageKbBinding: 'controller.cluster_disk_usage_kb',
+    clusterDiskFreeKbBinding: 'controller.cluster_disk_free_kb',
+    clusterCapacityBinding: 'controller.cluster_capacity',
 
-      var clusterDiskUsageKb = 0;
-      var clusterDiskFreeKb = 0;
+    data: function() {
+      var clusterDiskUsageKb = this.get('clusterDiskUsageKb');
+      var clusterDiskFreeKb = this.get('clusterDiskFreeKb');
+      var clusterCapacity = this.get('clusterCapacity');
 
       var normalizedDiskFree;
       var normalizedDiskUsed;
 
-      if(false) {
-        // normalizedAbnormal =
-        //   Math.round((quorumUnavailableCount / partitionCount) * 100);
-        // normalizedPartitions = 100 - normalizedAbnormal;
+      if(clusterDiskUsageKb > 0) {
+        normalizedDiskUsed =
+          Math.round((clusterCapacity / clusterDiskUsageKb) * 100);
+        normalizedDiskFree = 100 - normalizedDiskUsed;
       } else {
         // Default
-        normalizedDiskFree = 100;
         normalizedDiskUsed = 0;
+        normalizedDiskFree = 100;
       }
 
       return [normalizedDiskUsed, normalizedDiskFree];
