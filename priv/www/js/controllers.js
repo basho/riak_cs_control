@@ -13,6 +13,9 @@ minispade.register('controllers', function() {
         url: '/disk_usage',
         dataType: 'json',
 
+        // The JSON object that's received from RiakCS is of the form:
+        // {"disk_usage":{"cluster_capacity":230398124,"cluster_disk_usage_kb":34559719,"cluster_disk_free_kb":195838405,"cluster_node_count":1,"n_val":3,"object_storage_capacity_remaining_kb":65279468}}
+
         success: function (data) {
           usage = RiakCsControl.DiskUsage.createRecord(data.disk_usage);
           that.set('content', usage);
