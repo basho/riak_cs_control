@@ -219,9 +219,9 @@ minispade.register('controllers', function() {
 
     classNames: ['chart'],
 
-    clusterDiskUsageKbBinding: 'controller.cluster_disk_usage_kb',
-    clusterDiskFreeKbBinding: 'controller.cluster_disk_free_kb',
-    clusterCapacityBinding: 'controller.cluster_capacity',
+    clusterDiskUsageKbBinding: 'content.cluster_disk_usage_kb',
+    clusterDiskFreeKbBinding: 'content.cluster_disk_free_kb',
+    clusterCapacityBinding: 'content.cluster_capacity',
 
     data: function() {
       var clusterDiskUsageKb = this.get('clusterDiskUsageKb');
@@ -242,7 +242,7 @@ minispade.register('controllers', function() {
       }
 
       return [normalizedDiskUsed, normalizedDiskFree];
-    }.property('clusterDiskUsageKb', 'clusterDiskFreeKb'),
+    }.property('clusterDiskUsageKb', 'clusterDiskFreeKb', 'clusterCapacity'),
 
     id: '#disk-usage-chart',
 
